@@ -1,5 +1,5 @@
 # wrangler.toml
-name = 'gemini-worker'
+name = 'ai-power-webside'
 type = "pages"
 
 [env.production]
