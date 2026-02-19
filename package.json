@@ -3,20 +3,13 @@
   "version": "2.0.0",
   "private": true,
   "description": "AI-powered web development platform with code editor, chat assistant, and cloud sync",
+  "author": "Aung Thu Rain",
+  "keywords": ["ai", "code-editor", "cloudflare-pages", "web-platform"],
   "scripts": {
     "build": "echo \"No build step required\"",
     "deploy": "wrangler pages deploy ./ --project-name=amkyaw-dev",
-    "preview": "wrangler pages dev ./",
-    "dev": "wrangler pages dev ./"
+    "preview": "wrangler pages dev ./"
   },
-  "keywords": [
-    "ai",
-    "code-editor",
-    "cloudflare-pages",
-    "web-platform"
-  ],
-  "author": "Aung Thu Rain",
-  "license": "MIT",
   "devDependencies": {
     "wrangler": "^4.66.0"
   },
