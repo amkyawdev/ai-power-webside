@@ -1,0 +1,30 @@
+{
+  "name": "amkyaw-dev",
+  "version": "2.0.0",
+  "description": "AI-powered web development platform with code editor, chat assistant, and cloud sync",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'No build step required'",
+    "deploy": "wrangler pages deploy ./ --project-name=amkyaw-dev",
+    "preview": "wrangler pages dev ./"
+  },
+  "keywords": [
+    "code-editor",
+    "ai-assistant",
+    "web-development",
+    "cloudflare-pages"
+  ],
+  "author": "Aung Thu Rain",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/amkyaw-dev.git"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

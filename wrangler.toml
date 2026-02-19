@@ -1,0 +1,30 @@
+name = "amkyaw-dev"
+type = "pages"
+
+[env.production]
+routes = [
+  { pattern = "amkyaw.dev/*", zone_id = "your-zone-id" }
+]
+
+[env.preview]
+routes = [
+  { pattern = "preview.amkyaw.dev/*" }
+]
+
+[[redirects]]
+from = "/"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[env.production.vars]
+NODE_VERSION = "18"
+NPM_VERSION = "9"
+
+[build]
+command = "echo 'Static site - no build required'"
+output_directory = "."
