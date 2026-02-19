@@ -1,4 +1,5 @@
-name = "amkyaw-dev"
+# wrangler.toml
+name = 'gemini-worker'
 type = "pages"
 
 [env.production]
