@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        /* Aside Menu - Icon only for both views */
+        .aside-menu { width: 80px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        .aside-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 15px; cursor: pointer; transition: all 0.3s; font-size: 24px; }
+        .aside-icon:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
+        .aside-icon.active { background: linear-gradient(45deg, #667eea, #764ba2); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        
+        /* Header */
+        .header { height: 70px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; padding: 0 20px; color: white; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
+        .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+        .header-nav { display: flex; gap: 15px; margin-left: 40px; }
+        .header-nav .text-btn { padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+        .header-nav .text-btn:hover { background: rgba(255,255,255,0.2); }
+        .header-right { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+        .user-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
+        .aside-toggle { font-size: 24px; cursor: pointer; display: none; }
+        
+        /* Dashboard Content */
+        .content { flex: 1; padding: 30px; overflow-y: auto; color: white; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
+        .card h3 { font-size: 20px; margin-bottom: 15px; }
+        .card p { opacity: 0.8; margin-bottom: 20px; }
+        .card-btn { padding: 10px 20px; background: linear-gradient(45deg, #667eea, #764ba2); border: none; border-radius: 8px; color: white; cursor: pointer; transition: all 0.3s; }
+        .card-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        
+        /* Mobile Menu Overlay */
+        .mobile-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100vh; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 1000; transition: left 0.3s; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .mobile-menu.open { left: 0; }
+        .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .mobile-menu-close { font-size: 24px; cursor: pointer; }
+        .mobile-menu-item { padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
+        .mobile-menu-item:hover { background: rgba(102, 126, 234, 0.1); }
+        .mobile-menu-item i { margin-right: 15px; width: 25px; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .header-nav { display: none; }
+            .aside-toggle { display: block; }
+            .content-grid { grid-template-columns: 1fr; }
+            .aside-menu { position: fixed; left: -80px; transition: left 0.3s; z-index: 100; }
+            .aside-menu.open { left: 0; }
+        }
+        
+        @media (min-width: 769px) {
+            .header-nav { display: flex !important; }
+            .menu-toggle { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Aside Menu (Icon only) -->
+        <div class="aside-menu" id="asideMenu">
+            <div class="aside-icon active" onclick="navigate('dashboard')" title="Dashboard"><i class="fas fa-home"></i></div>
+            <div class="aside-icon" onclick="navigate('chat')" title="Chat"><i class="fas fa-comment"></i></div>
+            <div class="aside-icon" onclick="navigate('coder')" title="Coder"><i class="fas fa-code"></i></div>
+            <div class="aside-icon" onclick="navigate('docs')" title="Docs"><i class="fas fa-book"></i></div>
+            <div class="aside-icon" onclick="navigate('settings')" title="Settings"><i class="fas fa-cog"></i></div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <div class="menu-toggle" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></div>
+                    <div class="logo">amkyaw.dev</div>
+                    <div class="header-nav" id="headerNav">
+                        <div class="text-btn" onclick="navigate('dashboard')">Dashboard</div>
+                        <div class="text-btn" onclick="navigate('chat')">Chat</div>
+                        <div class="text-btn" onclick="navigate('coder')">Coder</div>
+                        <div class="text-btn" onclick="navigate('docs')">Docs</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="text-btn" onclick="window.location.href='../auth/login.html'">Login</div>
+                    <div class="user-icon" onclick="navigate('settings')"><i class="fas fa-user"></i></div>
+                    <div class="aside-toggle" onclick="toggleAside()"><i class="fas fa-chevron-right"></i></div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="content">
+                <h2 style="margin-bottom: 30px;">Welcome back, User!</h2>
+                <div class="content-grid">
+                    <div class="card">
+                        <h3>Recent Projects</h3>
+                        <p>You have 3 ongoing projects. Continue where you left off.</p>
+                        <button class="card-btn" onclick="navigate('coder')">Open Coder</button>
+                    </div>
+                    <div class="card">
+                        <h3>AI Chat Assistant</h3>
+                        <p>Need help? Chat with our AI assistant for coding support.</p>
+                        <button class="card-btn" onclick="navigate('chat')">Start Chat</button>
+                    </div>
+                    <div class="card">
+                        <h3>Documentation</h3>
+                        <p>Learn how to use amkyaw.dev effectively.</p>
+                        <button class="card-btn" onclick="navigate('docs')">Read Docs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <div class="mobile-menu-close" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="mobile-menu-item" onclick="navigate('dashboard')"><i class="fas fa-home"></i> Dashboard</div>
+        <div class="mobile-menu-item" onclick="navigate('chat')"><i class="fas fa-comment"></i> New Chat</div>
+        <div class="mobile-menu-item"><i class="fas fa-history"></i> History</div>
+        <div class="mobile-menu-item" onclick="navigate('coder')"><i class="fas fa-code"></i> New Coder</div>
+        <div class="mobile-menu-item"><i class="fas fa-project-diagram"></i> Projects</div>
+        <div class="mobile-menu-item" onclick="navigate('settings')"><i class="fas fa-cog"></i> Settings</div>
+        <div class="mobile-menu-item" onclick="navigate('about')"><i class="fas fa-info-circle"></i> About</div>
+    </div>
+    
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
