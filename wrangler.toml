@@ -1,25 +1,8 @@
-name = 'amkyawdev'
-type = "pages"
+name = "amkyawdev"
+main = "worker.js"
+compatibility_date = "2026-02-19"
 
-[env.production]
-routes = [
-  { pattern = "amkyaw.dev/*", zone_id = "your-zone-id" }
-]
-
-[env.preview]
-routes = [
-  { pattern = "preview.amkyaw.dev/*" }
-]
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
-[env.production.vars]
-NODE_VERSION = "18"
-NPM_VERSION = "9"
-
-[build]
-command = "echo 'Static site - no build required'"
-output_directory = "."
+# Serve static files
+[assets]
+directory = "./"
+binding = "ASSETS"
