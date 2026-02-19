@@ -1,0 +1,313 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations */
+@layer utilities {
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    .animate-slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .animate-pulse-slow {
+        animation: pulse 2s infinite;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+/* Glassmorphism */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid #667eea;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button styles */
+.btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50;
+}
+
+.btn-primary {
+    @apply bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg focus:ring-purple-500;
+}
+
+.btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500 dark:bg-gray-700 dark:text-white;
+}
+
+.btn-outline {
+    @apply border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white;
+}
+
+/* Card styles */
+.card {
+    @apply glass rounded-xl p-6 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl;
+}
+
+/* Input styles */
+.input {
+    @apply w-full px-4 py-3 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300;
+}
+
+/* Mobile menu */
+.mobile-menu {
+    @apply fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out;
+}
+
+/* Dark mode */
+.dark {
+    @apply bg-gray-900 text-white;
+}
+
+.dark .glass {
+    @apply bg-gray-800 bg-opacity-50;
+}
+
+/* Responsive containers */
+.container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Grid layouts */
+.grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+}
+
+/* Code editor styles */
+.CodeMirror {
+    @apply h-full font-mono text-sm;
+}
+
+/* Terminal styles */
+.terminal {
+    @apply bg-gray-900 text-green-400 font-mono p-4 rounded-lg overflow-auto;
+}
+
+.terminal-input {
+    @apply bg-transparent border-none outline-none text-green-400 font-mono;
+}
+
+/* Notification */
+.notification {
+    @apply fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full;
+}
+
+.notification.show {
+    @apply translate-x-0;
+}
+
+.notification.success {
+    @apply bg-green-500 text-white;
+}
+
+.notification.error {
+    @apply bg-red-500 text-white;
+}
+
+.notification.info {
+    @apply bg-blue-500 text-white;
+}
+
+/* Tooltip */
+.tooltip {
+    @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 transition-opacity duration-300 pointer-events-none;
+}
+
+.has-tooltip:hover .tooltip {
+    @apply opacity-100;
+}
+
+/* Progress bar */
+.progress-bar {
+    @apply w-full h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+    @apply h-full bg-gradient-to-r from-purple-600 to-blue-600 transition-all duration-300;
+}
+
+/* Avatar */
+.avatar {
+    @apply w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white font-bold;
+}
+
+.avatar-lg {
+    @apply w-16 h-16 text-2xl;
+}
+
+.avatar-sm {
+    @apply w-8 h-8 text-sm;
+}
+
+/* Badge */
+.badge {
+    @apply px-2 py-1 text-xs font-semibold rounded-full;
+}
+
+.badge-primary {
+    @apply bg-purple-600 text-white;
+}
+
+.badge-success {
+    @apply bg-green-500 text-white;
+}
+
+.badge-warning {
+    @apply bg-yellow-500 text-white;
+}
+
+.badge-danger {
+    @apply bg-red-500 text-white;
+}
+
+/* Divider */
+.divider {
+    @apply my-4 border-t border-white border-opacity-20;
+}
+
+/* Loading skeleton */
+.skeleton {
+    @apply animate-pulse bg-gray-300 rounded;
+}
+
+/* Markdown styles */
+.markdown {
+    @apply prose prose-invert max-w-none;
+}
+
+.markdown h1 {
+    @apply text-4xl font-bold mb-4;
+}
+
+.markdown h2 {
+    @apply text-3xl font-bold mb-3;
+}
+
+.markdown h3 {
+    @apply text-2xl font-bold mb-2;
+}
+
+.markdown p {
+    @apply mb-4 leading-relaxed;
+}
+
+.markdown code {
+    @apply bg-gray-800 text-green-400 px-1 py-0.5 rounded;
+}
+
+.markdown pre {
+    @apply bg-gray-900 p-4 rounded-lg overflow-auto mb-4;
+}
+
+.markdown ul {
+    @apply list-disc list-inside mb-4;
+}
+
+.markdown ol {
+    @apply list-decimal list-inside mb-4;
+}
+
+.markdown blockquote {
+    @apply border-l-4 border-purple-600 pl-4 italic my-4;
+}
+
+.markdown table {
+    @apply w-full border-collapse mb-4;
+}
+
+.markdown th {
+    @apply border border-white border-opacity-20 p-2 bg-gray-800;
+}
+
+.markdown td {
+    @apply border border-white border-opacity-20 p-2;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .glass {
+        background: white;
+        backdrop-filter: none;
+        border: 1px solid #ddd;
+    }
+}
