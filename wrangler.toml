@@ -1,4 +1,4 @@
-name = 'amkyaw-dev'
+name = 'amkyawdev'
 type = "pages"
 
 [env.production]
