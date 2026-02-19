@@ -1,5 +1,4 @@
-# wrangler.toml
-name = 'ai-power-webside'
+name = 'amkyaw-dev''
 type = "pages"
 
 [env.production]
