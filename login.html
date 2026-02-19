@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>amkyaw.dev - Sign In</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Sign in to amkyaw.dev - Your AI-powered web development platform">
+    <meta name="keywords" content="login, signin, authentication, web development">
+    <meta name="author" content="Aung Thu Rain">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+        
+        #auth-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .auth-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: cardFloat 0.8s ease-out;
+            transform-origin: center;
+        }
+        
+        @keyframes cardFloat {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .auth-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #a0a0ff, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .auth-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+        
+        .input-field:focus + .input-icon {
+            color: #667eea;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        
+        .password-toggle:hover {
+            color: #667eea;
+        }
+        
+        .input-error {
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            font-size: 0.8rem;
+            color: #ff6b6b;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+        
+        .input-group.error .input-error {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .input-group.error .input-field {
+            border-color: #ff6b6b;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .checkbox-wrapper input {
+            display: none;
+        }
+        
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            display: inline-block;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-wrapper input:checked + .checkbox-custom {
+            background: #667eea;
+            border-color: #667eea;
+        }
+        
+        .checkbox-wrapper input:checked + .checkbox-custom::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+        
+        .forgot-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .forgot-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #667eea, #9f7aea);
+            transition: width 0.3s;
+        }
+        
+        .forgot-link:hover {
+            color: white;
+        }
+        
+        .forgot-link:hover::after {
+            width: 100%;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #9f7aea);
+            background-size: 200% 200%;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -5px rgba(102, 126, 234, 0.5);
+        }
+        
+        .auth-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+        
+        .auth-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .auth-btn.loading .btn-text {
+            display: none;
+        }
+        
+        .auth-btn.loading .btn-loader {
+            display: inline-block;
+        }
+        
+        .btn-loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .social-login {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .social-login p {
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .social-login p::before,
+        .social-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-login p::before {
+            left: 0;
+        }
+        
+        .social-login p::after {
+            right: 0;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .social-icon:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .social-icon.google:hover { background: #DB4437; border-color: #DB4437; }
+        .social-icon.github:hover { background: #333; border-color: #333; }
+        .social-icon.facebook:hover { background: #4267B2; border-color: #4267B2; }
+        
+        .auth-footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .auth-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .auth-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #9f7aea);
+            transition: width 0.3s;
+        }
+        
+        .auth-footer a:hover {
+            color: white;
+        }
+        
+        .auth-footer a:hover::after {
+            width: 100%;
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .back-home:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+            color: white;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification-close {
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 30px 20px;
+                max-width: 400px;
+            }
+            
+            .auth-header h2 {
+                font-size: 2rem;
+            }
+            
+            .input-field {
+                padding: 15px 15px 15px 50px;
+            }
+            
+            .auth-btn {
+                padding: 15px;
+            }
+            
+            .back-home {
+                top: 20px;
+                left: 20px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .notification {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                width: auto;
+                transform: translateY(-100px);
+            }
+            
+            .notification.show {
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 25px 15px;
+            }
+            
+            .auth-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .social-icons {
+                gap: 15px;
+            }
+            
+            .social-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .auth-card {
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="auth-container">
+        <!-- Canvas for 3D Background -->
+        <canvas id="canvas-bg"></canvas>
+        
+        <!-- Back to Home Link -->
+        <a href="../index.html" class="back-home">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+        
+        <!-- Login Card -->
+        <div class="auth-card animate__animated animate__fadeInUp">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue your journey</p>
+            </div>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <!-- Email Field -->
+                <div class="input-group" id="emailGroup">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" class="input-field" id="email" placeholder="Email Address" autocomplete="email">
+                    <div class="input-error" id="emailError">Please enter a valid email</div>
+                </div>
+                
+                <!-- Password Field -->
+                <div class="input-group" id="passwordGroup">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" class="input-field" id="password" placeholder="Password" autocomplete="current-password">
+                    <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                    <div class="input-error" id="passwordError">Password must be at least 6 characters</div>
+                </div>
+                
+                <!-- Remember Me & Forgot Password -->
+                <div class="remember-forgot">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="remember">
+                        <span class="checkbox-custom"></span>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="reset.html" class="forgot-link">Forgot Password?</a>
+                </div>
+                
+                <!-- Login Button -->
+                <button type="submit" class="auth-btn" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader"></span>
+                </button>
+                
+                <!-- Social Login -->
+                <div class="social-login">
+                    <p>Or continue with</p>
+                    <div class="social-icons">
+                        <div class="social-icon google" onclick="socialLogin('google')">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-icon github" onclick="socialLogin('github')">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="social-icon facebook" onclick="socialLogin('facebook')">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Register Link -->
+                <div class="auth-footer">
+                    Don't have an account? <a href="register.html">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div class="notification" id="notification">
+        <i class="fas" id="notificationIcon"></i>
+        <span id="notificationMessage"></span>
+        <i class="fas fa-times notification-close" onclick="hideNotification()"></i>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    
+    <script src="auth.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
+            authDomain: "smart-burme-app.firebaseapp.com",
+            projectId: "smart-burme-app",
+            storageBucket: "smart-burme-app.appspot.com",
+            messagingSenderId: "851502425686",
+            appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        // 3D Background Animation
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        
+        // Particle System
+        const particles = [];
+        const particleCount = Math.min(100, Math.floor(window.innerWidth * 0.05));
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 3 + 1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                color: `rgba(${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(Math.random() * 100 + 100)}, 255, ${Math.random() * 0.5})`
+            });
+        }
+        
+        // Mouse interaction
+        let mouseX = 0, mouseY = 0;
+        canvas.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw gradient background
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#0a0a1a');
+            gradient.addColorStop(0.5, '#1a1a3a');
+            gradient.addColorStop(1, '#2a1a4a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(p => {
+                // Mouse repulsion
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (100 - distance) / 100 * 0.5;
+                    p.x -= Math.cos(angle) * force;
+                    p.y -= Math.sin(angle) * force;
+                }
+                
+                p.x += p.speedX;
+                p.y += p.speedY;
+                
+                // Boundary check
+                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+                
+                // Draw particle
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                
+                // Draw connections
+                particles.forEach(p2 => {
+                    const dx2 = p.x - p2.x;
+                    const dy2 = p.y - p2.y;
+                    const distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                    
+                    if (distance2 < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(102, 126, 234, ${0.2 - distance2/500})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+        
+        // Toggle Password Visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Form Validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+        
+        // Show/Hide Error
+        function showError(inputId, show) {
+            const group = document.getElementById(inputId + 'Group');
+            if (show) {
+                group.classList.add('error');
+            } else {
+                group.classList.remove('error');
+            }
+        }
+        
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            notification.className = 'notification show ' + type;
+            messageEl.textContent = message;
+            
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle';
+            }
+            
+            setTimeout(() => {
+                hideNotification();
+            }, 5000);
+        }
+        
+        function hideNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+        
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Validate
+            let isValid = true;
+            
+            if (!validateEmail(email)) {
+                showError('email', true);
+                isValid = false;
+            } else {
+                showError('email', false);
+            }
+            
+            if (!validatePassword(password)) {
+                showError('password', true);
+                isValid = false;
+            } else {
+                showError('password', false);
+            }
+            
+            if (!isValid) return;
+            
+            // Show loading
+            loginBtn.classList.add('loading');
+            
+            try {
+                // Set persistence based on remember me
+                const persistence = remember ? 
+                    firebase.auth.Auth.Persistence.LOCAL : 
+                    firebase.auth.Auth.Persistence.SESSION;
+                
+                await auth.setPersistence(persistence);
+                
+                // Sign in
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                
+                // Save user to localStorage
+                const user = {
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    name: userCredential.user.displayName || email.split('@')[0],
+                    photoURL: userCredential.user.photoURL || '../img/user-1.svg'
+                };
+                
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                showNotification('Login successful! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = '../pages/dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMessage = 'Login failed. Please try again.';
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled.';
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                loginBtn.classList.remove('loading');
+            }
+        }
+        
+        // Social Login
+        function socialLogin(provider) {
+            let authProvider;
+            
+            switch(provider) {
+                case 'google':
+                    authProvider = new firebase.auth.GoogleAuthProvider();
+                    break;
+                case 'github':
+                    authProvider = new firebase.auth.GithubAuthProvider();
+                    break;
+                case 'facebook':
+                    authProvider = new firebase.auth.FacebookAuthProvider();
+                    break;
+            }
+            
+            auth.signInWithPopup(authProvider)
+                .then((result) => {
+                    const user = {
+                        uid: result.user.uid,
+                        email: result.user.email,
+                        name: result.user.displayName,
+                        photoURL: result.user.photoURL || '../img/user-1.svg'
+                    };
+                    
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    showNotification('Login successful!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '../pages/dashboard.html';
+                    }, 1500);
+                })
+                .catch((error) => {
+                    showNotification(error.message, 'error');
+                });
+        }
+        
+        // Check for saved email
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        if (savedEmail) {
+            document.getElementById('email').value = savedEmail;
+            document.getElementById('remember').checked = true;
+        }
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
+        
+        // Add keyboard shortcut (Enter to submit)
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin(e);
+            }
+        });
+        
+        // Add floating labels effect
+        const inputs = document.querySelectorAll('.input-field');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
