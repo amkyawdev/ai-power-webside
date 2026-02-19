@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#805ad5;stop-opacity:1" />
+        </linearGradient>
+        <clipPath id="circleView4">
+            <circle cx="50" cy="50" r="45"/>
+        </clipPath>
+    </defs>
+    
+    <!-- Background Circle -->
+    <circle cx="50" cy="50" r="48" fill="url(#grad4)" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- Hair - Curly -->
+    <path d="M30 20 Q40 10, 50 15 Q60 10, 70 20 L68 35 Q50 25, 32 35 Z" fill="#4a2c2c"/>
+    <circle cx="35" cy="25" r="5" fill="#4a2c2c"/>
+    <circle cx="45" cy="22" r="6" fill="#4a2c2c"/>
+    <circle cx="55" cy="22" r="6" fill="#4a2c2c"/>
+    <circle cx="65" cy="25" r="5" fill="#4a2c2c"/>
+    
+    <!-- Face -->
+    <circle cx="50" cy="55" r="28" fill="#f1d592" clip-path="url(#circleView4)"/>
+    
+    <!-- Eyes - Sleepy -->
+    <path d="M35 52 Q38 48, 41 52" stroke="#2c3e50" stroke-width="3" fill="none"/>
+    <path d="M59 52 Q62 48, 65 52" stroke="#2c3e50" stroke-width="3" fill="none"/>
+    
+    <!-- Eyebrows - Relaxed -->
+    <path d="M32 44 Q38 42, 44 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+    <path d="M56 44 Q62 42, 68 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+    
+    <!-- Nose -->
+    <circle cx="50" cy="58" r="2.5" fill="#b38b6d"/>
+    
+    <!-- Mouth - Small Smile -->
+    <path d="M44 66 Q50 70, 56 66" stroke="#b34b4b" stroke-width="2.5" fill="none"/>
+    
+    <!-- Glasses -->
+    <circle cx="38" cy="52" r="8" fill="none" stroke="#333" stroke-width="2"/>
+    <circle cx="62" cy="52" r="8" fill="none" stroke="#333" stroke-width="2"/>
+    <path d="M46 52 L54 52" stroke="#333" stroke-width="2"/>
+    <path d="M30 52 L30 60" stroke="#333" stroke-width="2"/>
+    <path d="M70 52 L70 60" stroke="#333" stroke-width="2"/>
+    
+    <!-- Shirt with Tie -->
+    <path d="M40 83 L50 92 L60 83 L60 97 L40 97 Z" fill="#2d3748"/>
+    <path d="M48 88 L52 88 L50 95 L48 88" fill="#c53030"/>
+</svg>

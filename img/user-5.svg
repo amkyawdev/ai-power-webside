@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+        <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f687b3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#d53f8c;stop-opacity:1" />
+        </linearGradient>
+        <clipPath id="circleView5">
+            <circle cx="50" cy="50" r="45"/>
+        </clipPath>
+    </defs>
+    
+    <!-- Background Circle -->
+    <circle cx="50" cy="50" r="48" fill="url(#grad5)" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- Hair - Ponytail -->
+    <path d="M30 20 Q50 5, 70 20 L68 30 Q50 15, 32 30 Z" fill="#b7791f"/>
+    <path d="M55 25 Q70 35, 65 45" fill="#b7791f"/>
+    <circle cx="62" cy="38" r="6" fill="#b7791f"/>
+    
+    <!-- Face -->
+    <circle cx="50" cy="55" r="28" fill="#f1d592" clip-path="url(#circleView5)"/>
+    
+    <!-- Eyes - Sparkling -->
+    <circle cx="38" cy="52" r="4" fill="#2c3e50"/>
+    <circle cx="62" cy="52" r="4" fill="#2c3e50"/>
+    <circle cx="36" cy="50" r="1.5" fill="white"/>
+    <circle cx="60" cy="50" r="1.5" fill="white"/>
+    <circle cx="40" cy="48" r="0.5" fill="white"/>
+    <circle cx="64" cy="48" r="0.5" fill="white"/>
+    
+    <!-- Eyebrows - Playful -->
+    <path d="M32 42 Q38 36, 44 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+    <path d="M56 42 Q62 36, 68 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+    
+    <!-- Nose -->
+    <path d="M48 58 Q50 61, 52 58" stroke="#b38b6d" stroke-width="2" fill="none"/>
+    
+    <!-- Mouth - Big Smile -->
+    <path d="M38 65 Q50 78, 62 65" stroke="#b34b4b" stroke-width="3" fill="none"/>
+    
+    <!-- Freckles -->
+    <circle cx="42" cy="60" r="1" fill="#8b5a2b"/>
+    <circle cx="48" cy="62" r="1" fill="#8b5a2b"/>
+    <circle cx="54" cy="60" r="1" fill="#8b5a2b"/>
+    
+    <!-- Hair Bow -->
+    <path d="M62 30 L70 25 L75 32 L68 35 Z" fill="#f56565"/>
+    <path d="M68 35 L75 38 L70 45 L62 40 Z" fill="#fc8181"/>
+    
+    <!-- Shirt -->
+    <path d="M40 83 L50 90 L60 83 L60 97 L40 97 Z" fill="#319795"/>
+    <circle cx="50" cy="92" r="3" fill="#fed7d7"/>
+</svg>

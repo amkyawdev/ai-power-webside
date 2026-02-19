@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+    <defs>
+        <linearGradient id="demoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+        </linearGradient>
+        <style>
+            .demo-text { font-family: Arial, sans-serif; fill: white; }
+            .demo-title { font-size: 24px; font-weight: bold; }
+            .demo-subtitle { font-size: 16px; }
+            .demo-box { fill: rgba(255,255,255,0.1); stroke: white; stroke-width: 1; }
+        </style>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="800" height="400" fill="url(#demoGrad)"/>
+    
+    <!-- Header Bar -->
+    <rect x="0" y="0" width="800" height="60" fill="rgba(0,0,0,0.3)"/>
+    <circle cx="30" cy="30" r="20" fill="white" opacity="0.3"/>
+    <text x="70" y="40" class="demo-text demo-title">amkyaw.dev</text>
+    
+    <!-- Sidebar -->
+    <rect x="0" y="60" width="200" height="340" fill="rgba(0,0,0,0.2)"/>
+    
+    <!-- Content Area -->
+    <rect x="220" y="80" width="350" height="200" class="demo-box" rx="10"/>
+    <text x="240" y="120" class="demo-text demo-subtitle">Dashboard Preview</text>
+    <text x="240" y="150" class="demo-text">• Project Statistics</text>
+    <text x="240" y="180" class="demo-text">• Recent Activities</text>
+    <text x="240" y="210" class="demo-text">• Quick Actions</text>
+    
+    <!-- Chat Preview -->
+    <rect x="590" y="80" width="180" height="280" class="demo-box" rx="10"/>
+    <circle cx="620" cy="120" r="15" fill="white" opacity="0.3"/>
+    <text x="650" y="130" class="demo-text">AI Chat</text>
+    <rect x="600" y="160" width="160" height="30" fill="white" opacity="0.2" rx="5"/>
+    <rect x="600" y="200" width="160" height="30" fill="white" opacity="0.2" rx="5"/>
+    <rect x="600" y="240" width="160" height="30" fill="white" opacity="0.2" rx="5"/>
+    
+    <!-- Code Preview -->
+    <rect x="220" y="300" width="550" height="80" class="demo-box" rx="5"/>
+    <text x="240" y="330" class="demo-text" font-family="monospace">function hello() {</text>
+    <text x="260" y="350" class="demo-text" font-family="monospace">  console.log("Welcome to amkyaw.dev");</text>
+    <text x="240" y="370" class="demo-text" font-family="monospace">}</text>
+    
+    <!-- Footer -->
+    <rect x="0" y="380" width="800" height="20" fill="rgba(0,0,0,0.2)"/>
+    <text x="350" y="395" class="demo-text" font-size="10">amkyaw.dev - AI Powered Development Platform</text>
+</svg>
