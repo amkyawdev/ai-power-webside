@@ -1,8 +1,0 @@
-name = "amkyawdev"
-main = "worker.js"
-compatibility_date = "2026-02-19"
-
-# Serve static files
-[assets]
-directory = "./"
-binding = "ASSETS"
