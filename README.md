@@ -30,7 +30,6 @@ A modern web development platform with AI integration, code editor, and cloud st
 ## Project Structure
 
 ```
-
 amkyaw.dev/
 ├── index.html              # Landing page with 3D animation
 ├── auth/                   # Authentication pages
