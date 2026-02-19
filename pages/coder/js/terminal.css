@@ -1,0 +1,530 @@
+/**
+ * terminal.css - Styles for Terminal Emulator
+ */
+
+.terminal-window {
+    background: #0a0a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.terminal-header {
+    background: #1a1a2e;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.terminal-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terminal-title::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #00ff00;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+.terminal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.terminal-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.terminal-btn.close:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.terminal-output {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #0a0a1a;
+    color: #00ff00;
+    scrollbar-width: thin;
+    scrollbar-color: #667eea rgba(255, 255, 255, 0.1);
+}
+
+.terminal-output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-output::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+}
+
+.terminal-line {
+    margin-bottom: 4px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.terminal-line.input {
+    color: #ff79c6;
+}
+
+.terminal-line.error {
+    color: #ef4444;
+}
+
+.terminal-line.warning {
+    color: #f59e0b;
+}
+
+.terminal-line.success {
+    color: #10b981;
+}
+
+.terminal-line.system {
+    color: #8b5cf6;
+}
+
+.terminal-line.header {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.terminal-line.category {
+    color: #ffd700;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.terminal-input-line {
+    padding: 10px 15px;
+    background: #0f0f1f;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terminal-prompt {
+    color: #00ff00;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    outline: none;
+    padding: 5px 0;
+}
+
+.terminal-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Terminal Tabs */
+.terminal-tabs {
+    display: flex;
+    background: #0f0f1f;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 10px 0;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.terminal-tab {
+    padding: 8px 15px;
+    background: #1a1a2e;
+    border-radius: 8px 8px 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+    transition: all 0.3s;
+}
+
+.terminal-tab:hover {
+    background: #2a2a3e;
+    color: white;
+}
+
+.terminal-tab.active {
+    background: #0a0a1a;
+    color: #00ff00;
+    border-color: #00ff00;
+    position: relative;
+}
+
+.terminal-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #0a0a1a;
+}
+
+.terminal-tab i {
+    font-size: 10px;
+    opacity: 0.7;
+    transition: all 0.3s;
+}
+
+.terminal-tab i:hover {
+    opacity: 1;
+    color: #ef4444;
+}
+
+/* Process List */
+.process-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.process-item {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.process-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.process-item.active {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+}
+
+.process-pid {
+    margin-left: auto;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Environment Variables */
+.env-list {
+    padding: 10px;
+}
+
+.env-item {
+    padding: 5px 10px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.env-key {
+    color: #ff79c6;
+    font-weight: 600;
+}
+
+.env-value {
+    color: #50fa7b;
+}
+
+/* Command Suggestions */
+.suggestions-dropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.suggestions-dropdown.show {
+    display: block;
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestion-item {
+    padding: 8px 15px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.selected {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+}
+
+.suggestion-item i {
+    width: 16px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Command Output Styling */
+.command-output {
+    padding: 5px 0;
+}
+
+.command-output table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 12px;
+}
+
+.command-output th {
+    text-align: left;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.command-output td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ASCII Art */
+.ascii-art {
+    font-family: monospace;
+    white-space: pre;
+    color: #00ff00;
+    font-size: 10px;
+    line-height: 1.2;
+    margin: 10px 0;
+}
+
+/* Color Classes */
+.text-green { color: #00ff00; }
+.text-red { color: #ef4444; }
+.text-yellow { color: #f59e0b; }
+.text-blue { color: #3b82f6; }
+.text-purple { color: #8b5cf6; }
+.text-pink { color: #ff79c6; }
+.text-cyan { color: #06b6d4; }
+.text-orange { color: #f97316; }
+
+/* Background Classes */
+.bg-black { background-color: #000000; }
+.bg-gray { background-color: #1a1a1a; }
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-running { background-color: #10b981; box-shadow: 0 0 5px #10b981; }
+.status-stopped { background-color: #ef4444; box-shadow: 0 0 5px #ef4444; }
+.status-waiting { background-color: #f59e0b; box-shadow: 0 0 5px #f59e0b; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .terminal-window {
+        border-radius: 0;
+        height: 100vh;
+    }
+    
+    .terminal-header {
+        padding: 8px 12px;
+    }
+    
+    .terminal-output {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .terminal-input-line {
+        padding: 8px 12px;
+    }
+    
+    .terminal-prompt {
+        font-size: 13px;
+    }
+    
+    .terminal-input {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .terminal-title {
+        font-size: 12px;
+    }
+    
+    .terminal-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+    
+    .terminal-output {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    .terminal-line {
+        margin-bottom: 3px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .terminal-window {
+        background: white;
+        color: black;
+    }
+    
+    .terminal-header,
+    .terminal-input-line,
+    .terminal-tabs {
+        display: none;
+    }
+    
+    .terminal-output {
+        color: black;
+    }
+    
+    .terminal-line.error,
+    .terminal-line.warning,
+    .terminal-line.success {
+        color: black;
+        font-weight: bold;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .terminal-window {
+        background: #0a0a1a;
+    }
+}
