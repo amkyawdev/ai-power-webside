@@ -1,5 +1,18 @@
-"scripts": {
-  "build": "echo \"No build step required\"",
-  "deploy": "wrangler deploy",
-  "preview": "wrangler dev"
+{
+  "name": "amkyawdev",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker to serve AI-powered webside from GitHub repo",
+  "author": "Aung Thu Rain",
+  "scripts": {
+    "build": "echo \"No build step required\"",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.66.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }
