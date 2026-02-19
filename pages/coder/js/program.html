@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - Program Viewer</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="js/project.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .program-header {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .program-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .program-title i {
+            color: #ffd700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .program-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .program-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .program-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .program-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .program-btn.primary:hover {
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main Container */
+        .program-container {
+            display: flex;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+            overflow: hidden;
+        }
+
+        /* Language Tabs */
+        .language-tabs {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tabs-header h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .tabs-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .tab-item {
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .tab-item.active {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .tab-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tab-badge {
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Recent files section */
+        .recent-files {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recent-title {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .recent-item {
+            padding: 8px 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .recent-item i {
+            margin-right: 8px;
+            font-size: 10px;
+            color: #ffd700;
+        }
+
+        /* Main Content */
+        .program-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a2e;
+        }
+
+        /* File Info Bar */
+        .file-info-bar {
+            height: 50px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .file-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .file-path span {
+            color: #ffd700;
+        }
+
+        .file-stats {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .file-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Code Editor Section */
+        .editor-section {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .line-numbers {
+            width: 60px;
+            background: #0f0f1f;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.3);
+            user-select: none;
+            overflow-y: hidden;
+        }
+
+        .line-number {
+            padding: 0 10px;
+            height: 22px;
+            line-height: 22px;
+        }
+
+        .line-number.current {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .code-display {
+            flex: 1;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 22px;
+            color: #fff;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #1a1a2e;
+        }
+
+        /* Syntax highlighting colors */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+        .operator { color: #ff79c6; }
+        .tag { color: #ff79c6; }
+        .attribute { color: #50fa7b; }
+        .value { color: #f1fa8c; }
+
+        /* Mini Map */
+        .mini-map {
+            width: 100px;
+            background: #0f0f1f;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .map-content {
+            padding: 15px 5px;
+            font-family: 'Fira Code', monospace;
+            font-size: 4px;
+            line-height: 6px;
+            color: rgba(255, 255, 255, 0.2);
+            white-space: pre;
+            overflow: hidden;
+            transform: scale(1);
+            writing-mode: vertical-lr;
+        }
+
+        .map-viewport {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            pointer-events: none;
+        }
+
+        /* Bottom Panel */
+        .bottom-panel {
+            height: 200px;
+            background: #0f0f1f;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 20px;
+        }
+
+        .panel-tab {
+            padding: 10px 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-tab:hover {
+            color: white;
+        }
+
+        .panel-tab.active {
+            color: white;
+            border-bottom-color: #667eea;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Problems list */
+        .problem-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .problem-item.error .problem-icon {
+            color: #ef4444;
+        }
+
+        .problem-item.warning .problem-icon {
+            color: #f59e0b;
+        }
+
+        .problem-location {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+
+        /* Output */
+        .output-line {
+            padding: 4px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .output-line.success { color: #10b981; }
+        .output-line.error { color: #ef4444; }
+        .output-line.warning { color: #f59e0b; }
+
+        /* Debug variables */
+        .debug-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .debug-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .debug-key {
+            color: #ff79c6;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .debug-value {
+            color: #50fa7b;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .language-tabs {
+                position: fixed;
+                left: -200px;
+                top: 60px;
+                bottom: 0;
+                z-index: 90;
+                transition: left 0.3s;
+            }
+
+            .language-tabs.open {
+                left: 0;
+            }
+
+            .mini-map {
+                display: none;
+            }
+
+            .bottom-panel {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="program-header">
+        <div class="program-title">
+            <i class="fas fa-play-circle"></i>
+            <span>Program Viewer - <span id="currentFile">index.html</span></span>
+        </div>
+        <div class="program-actions">
+            <button class="program-btn" onclick="runProgram()">
+                <i class="fas fa-play"></i> Run
+            </button>
+            <button class="program-btn" onclick="debugProgram()">
+                <i class="fas fa-bug"></i> Debug
+            </button>
+            <button class="program-btn primary" onclick="saveProgram()">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="program-container">
+        <!-- Language Tabs -->
+        <div class="language-tabs" id="languageTabs">
+            <div class="tabs-header">
+                <h3><i class="fas fa-code"></i> LANGUAGES</h3>
+            </div>
+            <div class="tabs-list" id="tabsList">
+                <!-- HTML -->
+                <div class="tab-item active" onclick="switchLanguage('html')">
+                    <div class="tab-icon" style="color: #e34f26;">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <span class="tab-name">HTML</span>
+                    <span class="tab-badge">5</span>
+                </div>
+                
+                <!-- CSS -->
+                <div class="tab-item" onclick="switchLanguage('css')">
+                    <div class="tab-icon" style="color: #264de4;">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <span class="tab-name">CSS</span>
+                    <span class="tab-badge">3</span>
+                </div>
+                
+                <!-- JavaScript -->
+                <div class="tab-item" onclick="switchLanguage('javascript')">
+                    <div class="tab-icon" style="color: #f7df1e;">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <span class="tab-name">JavaScript</span>
+                    <span class="tab-badge">ES6</span>
+                </div>
+                
+                <!-- Python -->
+                <div class="tab-item" onclick="switchLanguage('python')">
+                    <div class="tab-icon" style="color: #3776ab;">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <span class="tab-name">Python</span>
+                    <span class="tab-badge">3.9</span>
+                </div>
+                
+                <!-- Vue -->
+                <div class="tab-item" onclick="switchLanguage('vue')">
+                    <div class="tab-icon" style="color: #42b883;">
+                        <i class="fab fa-vuejs"></i>
+                    </div>
+                    <span class="tab-name">Vue</span>
+                    <span class="tab-badge">3</span>
+                </div>
+                
+                <!-- Markdown -->
+                <div class="tab-item" onclick="switchLanguage('markdown')">
+                    <div class="tab-icon" style="color: #083fa1;">
+                        <i class="fab fa-markdown"></i>
+                    </div>
+                    <span class="tab-name">Markdown</span>
+                </div>
+                
+                <!-- TypeScript -->
+                <div class="tab-item" onclick="switchLanguage('typescript')">
+                    <div class="tab-icon" style="color: #3178c6;">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span class="tab-name">TypeScript</span>
+                    <span class="tab-badge">TSX</span>
+                </div>
+                
+                <!-- JSON -->
+                <div class="tab-item" onclick="switchLanguage('json')">
+                    <div class="tab-icon" style="color: #f7df1e;">
+                        <i class="fas fa-brackets-curly"></i>
+                    </div>
+                    <span class="tab-name">JSON</span>
+                </div>
+            </div>
+            
+            <!-- Recent Files -->
+            <div class="recent-files">
+                <div class="recent-title">
+                    <i class="fas fa-history"></i> RECENT
+                </div>
+                <div class="recent-item" onclick="openRecent('index.html')">
+                    <i class="fas fa-file-code"></i> index.html
+                </div>
+                <div class="recent-item" onclick="openRecent('style.css')">
+                    <i class="fas fa-file-code"></i> style.css
+                </div>
+                <div class="recent-item" onclick="openRecent('script.js')">
+                    <i class="fas fa-file-code"></i> script.js
+                </div>
+                <div class="recent-item" onclick="openRecent('app.py')">
+                    <i class="fas fa-file-code"></i> app.py
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="program-content">
+            <!-- File Info Bar -->
+            <div class="file-info-bar">
+                <div class="file-path">
+                    <i class="fas fa-folder-open"></i>
+                    <span>project/</span> <span id="fileName">index.html</span>
+                </div>
+                <div class="file-stats">
+                    <div class="file-stat">
+                        <i class="fas fa-code"></i>
+                        <span id="lineCount">124 lines</span>
+                    </div>
+                    <div class="file-stat">
+                        <i class="fas fa-weight"></i>
+                        <span id="fileSize">3.2 KB</span>
+                    </div>
+                    <div class="file-stat">
+                        <i class="fas fa-clock"></i>
+                        <span id="lastModified">2 min ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor Section -->
+            <div class="editor-section">
+                <!-- Line Numbers -->
+                <div class="line-numbers" id="lineNumbers"></div>
+                
+                <!-- Code Display -->
+                <div class="code-display" id="codeDisplay" contenteditable="true" spellcheck="false"></div>
+                
+                <!-- Mini Map -->
+                <div class="mini-map" id="miniMap">
+                    <div class="map-content" id="mapContent"></div>
+                    <div class="map-viewport" id="mapViewport"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Panel -->
+            <div class="bottom-panel">
+                <div class="panel-tabs">
+                    <div class="panel-tab active" onclick="switchPanel('problems')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Problems
+                    </div>
+                    <div class="panel-tab" onclick="switchPanel('output')">
+                        <i class="fas fa-terminal"></i>
+                        Output
+                    </div>
+                    <div class="panel-tab" onclick="switchPanel('debug')">
+                        <i class="fas fa-bug"></i>
+                        Debug Console
+                    </div>
+                    <div class="panel-tab" onclick="switchPanel('variables')">
+                        <i class="fas fa-variable"></i>
+                        Variables
+                    </div>
+                </div>
+                
+                <!-- Problems Panel -->
+                <div class="panel-content" id="problemsPanel">
+                    <div class="problem-item error">
+                        <i class="fas fa-times-circle problem-icon"></i>
+                        <span>Missing semicolon at line 42</span>
+                        <span class="problem-location">(script.js:42)</span>
+                    </div>
+                    <div class="problem-item warning">
+                        <i class="fas fa-exclamation-triangle problem-icon"></i>
+                        <span>Unused variable 'count'</span>
+                        <span class="problem-location">(script.js:15)</span>
+                    </div>
+                    <div class="problem-item warning">
+                        <i class="fas fa-exclamation-triangle problem-icon"></i>
+                        <span>Arrow function expected a return value</span>
+                        <span class="problem-location">(script.js:28)</span>
+                    </div>
+                </div>
+                
+                <!-- Output Panel -->
+                <div class="panel-content" id="outputPanel" style="display: none;">
+                    <div class="output-line success">> Program started at 14:32:45</div>
+                    <div class="output-line">> Hello World!</div>
+                    <div class="output-line">> Button clicked!</div>
+                    <div class="output-line warning">! Deprecated feature used</div>
+                    <div class="output-line error">! Error: Cannot read property 'x' of undefined</div>
+                </div>
+                
+                <!-- Debug Panel -->
+                <div class="panel-content" id="debugPanel" style="display: none;">
+                    <div class="output-line">debug> breakpoint at line 23</div>
+                    <div class="output-line">debug> x = 42</div>
+                    <div class="output-line">debug> y = "hello"</div>
+                    <div class="output-line">debug> continuing...</div>
+                </div>
+                
+                <!-- Variables Panel -->
+                <div class="panel-content" id="variablesPanel" style="display: none;">
+                    <div class="debug-grid">
+                        <div class="debug-item">
+                            <div class="debug-key">count</div>
+                            <div class="debug-value">42</div>
+                        </div>
+                        <div class="debug-item">
+                            <div class="debug-key">message</div>
+                            <div class="debug-value">"Hello World"</div>
+                        </div>
+                        <div class="debug-item">
+                            <div class="debug-key">isActive</div>
+                            <div class="debug-value">true</div>
+                        </div>
+                        <div class="debug-item">
+                            <div class="debug-key">data</div>
+                            <div class="debug-value">Object {id: 1, name: "test"}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button class="program-btn" style="position: fixed; bottom: 20px; left: 20px; display: none; z-index: 95;" onclick="toggleLanguageTabs()">
+        <i class="fas fa-code"></i>
+    </button>
+
+    <script>
+        let currentLanguage = 'html';
+        let currentLine = 1;
+        let lineCount = 0;
+
+        // Sample code for different languages
+        const codeSamples = {
+            html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>My Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to amkyaw.dev</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="home">
+            <h2>Home Section</h2>
+            <p>This is the home section of our website.</p>
+            <button onclick="handleClick()">Click Me</button>
+        </section>
+        
+        <section id="about">
+            <h2>About Us</h2>
+            <p>We are creating amazing web experiences.</p>
+        </section>
+        
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <input type="text" placeholder="Name">
+                <input type="email" placeholder="Email">
+                <textarea placeholder="Message"></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 amkyaw.dev. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>`,
+
+            css: `/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+/* Main Content */
+main {
+    padding: 100px 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section {
+    margin-bottom: 4rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff, #a0a0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Form Styles */
+input, textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    section {
+        padding: 1.5rem;
+    }
+}`,
+
+            javascript: `// Main JavaScript File
+
+// DOM Elements
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded');
+    
+    // Initialize components
+    initializeNavigation();
+    initializeForm();
+    initializeAnimations();
+});
+
+// Navigation
+function initializeNavigation() {
+    const navLinks = document.querySelectorAll('nav a');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            }
+        });
+    });
+}
+
+// Form handling
+function initializeForm() {
+    const form = document.getElementById('contactForm');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validate
+            if (!validateForm(data)) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
+            
+            // Submit
+            submitForm(data);
+        });
+    }
+}
+
+// Form validation
+function validateForm(data) {
+    const name = data.name;
+    const email = data.email;
+    const message = data.message;
+    
+    if (!name || name.length < 2) return false;
+    if (!email || !email.includes('@')) return false;
+    if (!message || message.length < 10) return false;
+    
+    return true;
+}
+
+// Submit form
+async function submitForm(data) {
+    try {
+        showNotification('Sending...', 'info');
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        showNotification('Message sent successfully!', 'success');
+        
+        // Reset form
+        document.getElementById('contactForm').reset();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Failed to send message', 'error');
+    }
+}
+
+// Animations
+function initializeAnimations() {
+    const sections = document.querySelectorAll('section');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.6s ease';
+        observer.observe(section);
+    });
+}
+
+// Click handler
+function handleClick() {
+    console.log('Button clicked!');
+    showNotification('Button clicked!', 'success');
+}
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 2rem;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        border-radius: 8px;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}`,
+
+            python: `# Python Example
+from flask import Flask, render_template, request, jsonify
+import os
+import json
+
+app = Flask(__name__)
+
+# Configuration
+app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['DEBUG'] = True
+
+# Routes
+@app.route('/')
+def home():
+    """Home page route"""
+    return render_template('index.html')
+
+@app.route('/api/data')
+def get_data():
+    """API endpoint to get data"""
+    data = {
+        'name': 'amkyaw.dev',
+        'version': '2.0.0',
+        'features': ['AI Chat', 'Code Editor', 'Cloud Sync']
+    }
+    return jsonify(data)
+
+@app.route('/api/submit', methods=['POST'])
+def submit():
+    """Handle form submission"""
+    try:
+        data = request.get_json()
+        
+        # Validate data
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Process data
+        name = data.get('name')
+        email = data.get('email')
+        message = data.get('message')
+        
+        # Save to database (example)
+        save_to_database(name, email, message)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Data saved successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def save_to_database(name, email, message):
+    """Save data to database"""
+    # In production, use actual database
+    print(f"Saving: {name}, {email}, {message}")
+
+# Utility functions
+def format_response(data, status=200):
+    """Format API response"""
+    return app.response_class(
+        response=json.dumps(data, indent=2),
+        status=status,
+        mimetype='application/json'
+    )
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)`
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCode('html');
+            updateLineNumbers();
+            updateFileStats();
+            setupEditorListeners();
+            setupScrollSync();
+        });
+
+        // Switch language
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active tab
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Load code
+            loadCode(lang);
+            
+            // Update file name
+            const fileNames = {
+                html: 'index.html',
+                css: 'style.css',
+                javascript: 'script.js',
+                python: 'app.py',
+                vue: 'App.vue',
+                markdown: 'README.md',
+                typescript: 'app.ts',
+                json: 'data.json'
+            };
+            document.getElementById('fileName').textContent = fileNames[lang] || 'file.txt';
+            
+            // Update line numbers
+            updateLineNumbers();
+        }
+
+        // Load code
+        function loadCode(lang) {
+            const display = document.getElementById('codeDisplay');
+            display.innerHTML = syntaxHighlight(codeSamples[lang] || '// No code available');
+            
+            // Update line count
+            lineCount = codeSamples[lang].split('\n').length;
+            document.getElementById('lineCount').textContent = lineCount + ' lines';
+            
+            // Update mini map
+            updateMiniMap();
+        }
+
+        // Syntax highlighting
+        function syntaxHighlight(code) {
+            // Simple syntax highlighting (in production use proper library)
+            return code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\/\/(.*)/g, '<span class="comment">//$1</span>')
+                .replace(/\/\*[\s\S]*?\*\//g, '<span class="comment">$&</span>')
+                .replace(/(".*?"|'.*?')/g, '<span class="string">$&</span>')
+                .replace(/\b(function|return|if|for|while|else|break|continue|var|let|const|class|extends|import|export)\b/g, '<span class="keyword">$&</span>')
+                .replace(/\b(\d+)\b/g, '<span class="number">$&</span>')
+                .replace(/([{}[\]()+\-*/=<>!&|])/g, '<span class="operator">$&</span>');
+        }
+
+        // Update line numbers
+        function updateLineNumbers() {
+            const lines = document.getElementById('codeDisplay').innerText.split('\n');
+            const lineNumbers = document.getElementById('lineNumbers');
+            
+            lineNumbers.innerHTML = '';
+            for (let i = 1; i <= lines.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'line-number' + (i === currentLine ? ' current' : '');
+                div.textContent = i;
+                lineNumbers.appendChild(div);
+            }
+        }
+
+        // Update file stats
+        function updateFileStats() {
+            // Update file size
+            const code = document.getElementById('codeDisplay').innerText;
+            const size = new Blob([code]).size;
+            document.getElementById('fileSize').textContent = (size / 1024).toFixed(1) + ' KB';
+            
+            // Update last modified
+            document.getElementById('lastModified').textContent = 'Just now';
+        }
+
+        // Setup editor listeners
+        function setupEditorListeners() {
+            const editor = document.getElementById('codeDisplay');
+            
+            editor.addEventListener('input', function() {
+                updateLineNumbers();
+                updateFileStats();
+                updateMiniMap();
+            });
+            
+            editor.addEventListener('keydown', function(e) {
+                // Handle tab key
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    document.execCommand('insertText', false, '    ');
+                }
+                
+                // Handle line numbers
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                const line = getCurrentLine(range);
+                if (line !== currentLine) {
+                    currentLine = line;
+                    updateLineNumbers();
+                }
+            });
+            
+            editor.addEventListener('scroll', function() {
+                syncScroll();
+            });
+        }
+
+        // Get current line number
+        function getCurrentLine(range) {
+            const pre = range.startContainer.parentNode;
+            const text = pre.textContent.substring(0, range.startOffset);
+            return (text.match(/\n/g) || []).length + 1;
+        }
+
+        // Setup scroll sync
+        function setupScrollSync() {
+            const editor = document.getElementById('codeDisplay');
+            const lineNumbers = document.getElementById('lineNumbers');
+            
+            editor.addEventListener('scroll', function() {
+                lineNumbers.scrollTop = editor.scrollTop;
+            });
+        }
+
+        // Update mini map
+        function updateMiniMap() {
+            const code = document.getElementById('codeDisplay').innerText;
+            const map = document.getElementById('mapContent');
+            
+            // Create mini map (simplified)
+            const lines = code.split('\n');
+            let mapText = '';
+            lines.forEach(line => {
+                if (line.trim()) {
+                    mapText += '█';
+                } else {
+                    mapText += '░';
+                }
+                mapText += '\n';
+            });
+            
+            map.textContent = mapText;
+        }
+
+        // Sync scroll with mini map
+        function syncScroll() {
+            const editor = document.getElementById('codeDisplay');
+            const viewport = document.getElementById('mapViewport');
+            
+            const scrollPercent = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+            const maxTop = 200 - viewport.clientHeight;
+            viewport.style.top = scrollPercent * maxTop + 'px';
+        }
+
+        // Open recent file
+        function openRecent(filename) {
+            const ext = filename.split('.').pop();
+            const langMap = {
+                'html': 'html',
+                'css': 'css',
+                'js': 'javascript',
+                'py': 'python',
+                'vue': 'vue',
+                'md': 'markdown',
+                'ts': 'typescript',
+                'json': 'json'
+            };
+            
+            if (langMap[ext]) {
+                switchLanguage(langMap[ext]);
+            }
+        }
+
+        // Run program
+        function runProgram() {
+            showNotification('🚀 Running program...', 'success');
+            switchPanel('output');
+            
+            // Simulate output
+            const output = document.getElementById('outputPanel');
+            output.innerHTML += '<div class="output-line success">> Program executed successfully</div>';
+        }
+
+        // Debug program
+        function debugProgram() {
+            showNotification('🐛 Debug mode activated', 'info');
+            switchPanel('debug');
+        }
+
+        // Save program
+        function saveProgram() {
+            showNotification('💾 Program saved to Google Drive', 'success');
+        }
+
+        // Switch panel
+        function switchPanel(panel) {
+            document.querySelectorAll('.panel-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            const panels = ['problems', 'output', 'debug', 'variables'];
+            panels.forEach(p => {
+                document.getElementById(p + 'Panel').style.display = 'none';
+            });
+            
+            document.getElementById(panel + 'Panel').style.display = 'block';
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                padding: 12px 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Toggle language tabs (mobile)
+        function toggleLanguageTabs() {
+            document.getElementById('languageTabs').classList.toggle('open');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+R to run
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                runProgram();
+            }
+            
+            // Ctrl+S to save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveProgram();
+            }
+            
+            // Ctrl+D to debug
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                debugProgram();
+            }
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - Terminal</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="js/terminal.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fira Code', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        /* Terminal Container */
+        .terminal-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #0a0a1a;
+        }
+
+        /* Terminal Header */
+        .terminal-header {
+            height: 40px;
+            background: #1a1a2e;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+
+        .terminal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-title i {
+            color: #00ff00;
+        }
+
+        .terminal-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+        }
+
+        .terminal-control {
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+        }
+
+        .terminal-control:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-control.close:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Terminal Tabs */
+        .terminal-tabs {
+            height: 35px;
+            background: #0f0f1f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 5px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .terminal-tab {
+            padding: 8px 15px;
+            background: #1a1a2e;
+            border-radius: 5px 5px 0 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+            transition: all 0.3s;
+        }
+
+        .terminal-tab:hover {
+            background: #2a2a3e;
+            color: white;
+        }
+
+        .terminal-tab.active {
+            background: #0a0a1a;
+            color: #00ff00;
+            border-color: #00ff00;
+        }
+
+        .terminal-tab i {
+            font-size: 10px;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+
+        .terminal-tab i:hover {
+            opacity: 1;
+            color: #ef4444;
+        }
+
+        .new-tab-btn {
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .new-tab-btn:hover {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        /* Terminal Main */
+        .terminal-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Terminal Sidebar */
+        .terminal-sidebar {
+            width: 250px;
+            background: #0f0f1f;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .process-list {
+            list-style: none;
+        }
+
+        .process-item {
+            padding: 8px 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .process-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .process-item.active {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+        }
+
+        .process-item i {
+            width: 16px;
+        }
+
+        .process-pid {
+            margin-left: auto;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .env-var {
+            padding: 5px 10px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .env-key {
+            color: #ff79c6;
+        }
+
+        .env-value {
+            color: #50fa7b;
+        }
+
+        /* Terminal Content */
+        .terminal-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a1a;
+        }
+
+        .terminal-output {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #00ff00;
+        }
+
+        .output-line {
+            margin-bottom: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .output-line.error {
+            color: #ef4444;
+        }
+
+        .output-line.warning {
+            color: #f59e0b;
+        }
+
+        .output-line.success {
+            color: #10b981;
+        }
+
+        .output-line.system {
+            color: #8b5cf6;
+        }
+
+        .output-line.directory {
+            color: #3b82f6;
+        }
+
+        .output-line.file {
+            color: #10b981;
+        }
+
+        .output-prompt {
+            display: inline-block;
+            margin-right: 10px;
+            color: #00ff00;
+            font-weight: 600;
+        }
+
+        .output-command {
+            color: #ff79c6;
+        }
+
+        /* Terminal Input */
+        .terminal-input-area {
+            padding: 15px 20px;
+            background: #0f0f1f;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .prompt {
+            color: #00ff00;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-path {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #terminalInput {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            outline: none;
+            padding: 8px 0;
+        }
+
+        .input-suggestions {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-suggestions.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.selected {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+        }
+
+        .suggestion-item i {
+            width: 16px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Terminal Footer */
+        .terminal-footer {
+            height: 30px;
+            background: #0f0f1f;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            gap: 20px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer-item i {
+            font-size: 10px;
+        }
+
+        .footer-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Dialog System */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .dialog-overlay.show {
+            display: flex;
+        }
+
+        .dialog {
+            width: 400px;
+            background: #1a1a2e;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dialog-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dialog-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .dialog-close {
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .dialog-close:hover {
+            color: #ef4444;
+        }
+
+        .dialog-content {
+            padding: 20px;
+        }
+
+        .dialog-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Fira Code', monospace;
+            margin-bottom: 15px;
+        }
+
+        .dialog-input:focus {
+            outline: none;
+            border-color: #00ff00;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .dialog-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .dialog-btn.primary {
+            background: #00ff00;
+            color: black;
+        }
+
+        .dialog-btn.primary:hover {
+            background: #00cc00;
+            transform: translateY(-2px);
+        }
+
+        .dialog-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .dialog-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .terminal-sidebar {
+                position: fixed;
+                left: -250px;
+                top: 75px;
+                bottom: 31px;
+                z-index: 90;
+                transition: left 0.3s;
+            }
+
+            .terminal-sidebar.open {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <i class="fas fa-terminal"></i>
+                <span>Terminal - amkyaw.dev</span>
+            </div>
+            <div class="terminal-controls">
+                <div class="terminal-control" onclick="minimizeTerminal()">
+                    <i class="fas fa-window-minimize"></i>
+                </div>
+                <div class="terminal-control" onclick="maximizeTerminal()">
+                    <i class="fas fa-window-maximize"></i>
+                </div>
+                <div class="terminal-control close" onclick="closeTerminal()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal Tabs -->
+        <div class="terminal-tabs" id="terminalTabs">
+            <div class="terminal-tab active">
+                <i class="fas fa-terminal"></i>
+                bash
+                <i class="fas fa-times" onclick="closeTab(event)"></i>
+            </div>
+            <div class="terminal-tab">
+                <i class="fas fa-code"></i>
+                python
+                <i class="fas fa-times" onclick="closeTab(event)"></i>
+            </div>
+            <div class="terminal-tab">
+                <i class="fas fa-database"></i>
+                mysql
+                <i class="fas fa-times" onclick="closeTab(event)"></i>
+            </div>
+            <div class="new-tab-btn" onclick="newTab()">
+                <i class="fas fa-plus"></i> New Tab
+            </div>
+        </div>
+
+        <!-- Terminal Main -->
+        <div class="terminal-main">
+            <!-- Terminal Sidebar -->
+            <div class="terminal-sidebar" id="terminalSidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <span>RUNNING PROCESSES</span>
+                        <i class="fas fa-sync-alt" style="cursor: pointer;" onclick="refreshProcesses()"></i>
+                    </div>
+                    <ul class="process-list">
+                        <li class="process-item active">
+                            <i class="fas fa-circle" style="color: #00ff00; font-size: 8px;"></i>
+                            bash
+                            <span class="process-pid">PID 1234</span>
+                        </li>
+                        <li class="process-item">
+                            <i class="fas fa-circle" style="color: #ffd700; font-size: 8px;"></i>
+                            python app.py
+                            <span class="process-pid">PID 1235</span>
+                        </li>
+                        <li class="process-item">
+                            <i class="fas fa-circle" style="color: #3b82f6; font-size: 8px;"></i>
+                            npm run dev
+                            <span class="process-pid">PID 1236</span>
+                        </li>
+                        <li class="process-item">
+                            <i class="fas fa-circle" style="color: #ef4444; font-size: 8px;"></i>
+                            docker-compose
+                            <span class="process-pid">PID 1237</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <span>ENVIRONMENT</span>
+                        <i class="fas fa-plus" style="cursor: pointer;" onclick="addEnvVar()"></i>
+                    </div>
+                    <div class="env-var">
+                        <span class="env-key">PATH</span>
+                        <span class="env-value">/usr/bin:/bin</span>
+                    </div>
+                    <div class="env-var">
+                        <span class="env-key">HOME</span>
+                        <span class="env-value">/home/user</span>
+                    </div>
+                    <div class="env-var">
+                        <span class="env-key">USER</span>
+                        <span class="env-value">developer</span>
+                    </div>
+                    <div class="env-var">
+                        <span class="env-key">SHELL</span>
+                        <span class="env-value">/bin/bash</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <span>HISTORY</span>
+                    </div>
+                    <div class="process-item" style="font-size: 11px;">
+                        <i class="fas fa-history"></i>
+                        git status
+                    </div>
+                    <div class="process-item" style="font-size: 11px;">
+                        <i class="fas fa-history"></i>
+                        npm install
+                    </div>
+                    <div class="process-item" style="font-size: 11px;">
+                        <i class="fas fa-history"></i>
+                        python manage.py
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Content -->
+            <div class="terminal-content">
+                <div class="terminal-output" id="terminalOutput">
+                    <div class="output-line system">
+                        <span class="output-prompt">[system]</span>
+                        Welcome to amkyaw.dev Terminal v2.0.0
+                    </div>
+                    <div class="output-line system">
+                        <span class="output-prompt">[system]</span>
+                        Type 'help' for available commands
+                    </div>
+                    <div class="output-line">
+                        <span class="output-prompt">user@amkyaw:~$</span>
+                        <span class="output-command">ls -la</span>
+                    </div>
+                    <div class="output-line directory">
+                        total 32
+                    </div>
+                    <div class="output-line directory">
+                        drwxr-xr-x  5 user  staff   160 Mar 15 10:30 .
+                    </div>
+                    <div class="output-line directory">
+                        drwxr-xr-x  3 user  staff    96 Mar 15 10:30 ..
+                    </div>
+                    <div class="output-line file">
+                        -rw-r--r--  1 user  staff   347 Mar 15 10:30 index.html
+                    </div>
+                    <div class="output-line file">
+                        -rw-r--r--  1 user  staff  1250 Mar 15 10:30 style.css
+                    </div>
+                    <div class="output-line file">
+                        -rw-r--r--  1 user  staff   856 Mar 15 10:30 script.js
+                    </div>
+                    <div class="output-line directory">
+                        drwxr-xr-x  2 user  staff    64 Mar 15 10:30 node_modules
+                    </div>
+                    <div class="output-line">
+                        <span class="output-prompt">user@amkyaw:~$</span>
+                        <span class="output-command">git status</span>
+                    </div>
+                    <div class="output-line success">
+                        On branch main
+                    </div>
+                    <div class="output-line success">
+                        Your branch is up to date with 'origin/main'
+                    </div>
+                    <div class="output-line warning">
+                        Changes not staged for commit:
+                    </div>
+                    <div class="output-line warning">
+                        modified:   index.html
+                    </div>
+                    <div class="output-line">
+                        <span class="output-prompt">user@amkyaw:~$</span>
+                        <span class="output-command">npm run dev</span>
+                    </div>
+                    <div class="output-line success">
+                        > dev-server@1.0.0 dev
+                    </div>
+                    <div class="output-line success">
+                        Starting development server...
+                    </div>
+                    <div class="output-line">
+                        Server running at http://localhost:3000
+                    </div>
+                </div>
+
+                <!-- Terminal Input -->
+                <div class="terminal-input-area">
+                    <div class="prompt">
+                        <i class="fas fa-chevron-right"></i>
+                        <span class="prompt-path">~/project</span>
+                        <span>$</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="terminalInput" placeholder="Enter command..." autofocus>
+                        <div class="input-suggestions" id="suggestions"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal Footer -->
+        <div class="terminal-footer">
+            <div class="footer-item">
+                <i class="fas fa-code-branch"></i>
+                main
+            </div>
+            <div class="footer-item">
+                <i class="fas fa-circle"></i>
+                bash
+            </div>
+            <div class="footer-item">
+                <i class="fas fa-clock"></i>
+                14:32:45
+            </div>
+            <div class="footer-status">
+                <span class="status-dot"></span>
+                <span>Connected</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog System -->
+    <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog" id="dialog">
+            <div class="dialog-header">
+                <span class="dialog-title" id="dialogTitle">Command</span>
+                <i class="fas fa-times dialog-close" onclick="closeDialog()"></i>
+            </div>
+            <div class="dialog-content" id="dialogContent">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button class="terminal-control" style="position: fixed; bottom: 40px; left: 20px; display: none; background: #1a1a2e; width: 50px; height: 50px; border-radius: 50%; z-index: 95;" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        // Command history
+        let commandHistory = [];
+        let historyIndex = -1;
+        
+        // Available commands
+        const commands = {
+            help: {
+                description: 'Show available commands',
+                usage: 'help [command]',
+                execute: (args) => showHelp(args)
+            },
+            ls: {
+                description: 'List directory contents',
+                usage: 'ls [-la] [path]',
+                execute: (args) => listFiles(args)
+            },
+            cd: {
+                description: 'Change directory',
+                usage: 'cd [directory]',
+                execute: (args) => changeDirectory(args)
+            },
+            pwd: {
+                description: 'Print working directory',
+                usage: 'pwd',
+                execute: () => printWorkingDirectory()
+            },
+            cat: {
+                description: 'Concatenate and display files',
+                usage: 'cat [file]',
+                execute: (args) => displayFile(args)
+            },
+            echo: {
+                description: 'Display a line of text',
+                usage: 'echo [text]',
+                execute: (args) => echoText(args)
+            },
+            clear: {
+                description: 'Clear the terminal screen',
+                usage: 'clear',
+                execute: () => clearTerminal()
+            },
+            date: {
+                description: 'Display current date and time',
+                usage: 'date',
+                execute: () => showDate()
+            },
+            whoami: {
+                description: 'Display current user',
+                usage: 'whoami',
+                execute: () => showUser()
+            },
+            ps: {
+                description: 'Report process status',
+                usage: 'ps [aux]',
+                execute: (args) => showProcesses(args)
+            },
+            kill: {
+                description: 'Terminate a process',
+                usage: 'kill [PID]',
+                execute: (args) => killProcess(args)
+            },
+            mkdir: {
+                description: 'Create a directory',
+                usage: 'mkdir [name]',
+                execute: (args) => makeDirectory(args)
+            },
+            touch: {
+                description: 'Create a file',
+                usage: 'touch [filename]',
+                execute: (args) => createFile(args)
+            },
+            rm: {
+                description: 'Remove file or directory',
+                usage: 'rm [-rf] [target]',
+                execute: (args) => remove(args)
+            },
+            cp: {
+                description: 'Copy files',
+                usage: 'cp [source] [dest]',
+                execute: (args) => copy(args)
+            },
+            mv: {
+                description: 'Move files',
+                usage: 'mv [source] [dest]',
+                execute: (args) => move(args)
+            },
+            grep: {
+                description: 'Search text patterns',
+                usage: 'grep [pattern] [file]',
+                execute: (args) => grep(args)
+            },
+            find: {
+                description: 'Find files',
+                usage: 'find [path] -name [pattern]',
+                execute: (args) => find(args)
+            },
+            chmod: {
+                description: 'Change file permissions',
+                usage: 'chmod [mode] [file]',
+                execute: (args) => changeMode(args)
+            },
+            ssh: {
+                description: 'SSH client',
+                usage: 'ssh [user@host]',
+                execute: (args) => ssh(args)
+            },
+            scp: {
+                description: 'Secure copy',
+                usage: 'scp [source] [dest]',
+                execute: (args) => secureCopy(args)
+            },
+            git: {
+                description: 'Git version control',
+                usage: 'git [command]',
+                execute: (args) => gitCommand(args)
+            },
+            npm: {
+                description: 'Node package manager',
+                usage: 'npm [command]',
+                execute: (args) => npmCommand(args)
+            },
+            python: {
+                description: 'Python interpreter',
+                usage: 'python [script]',
+                execute: (args) => pythonCommand(args)
+            },
+            docker: {
+                description: 'Docker containers',
+                usage: 'docker [command]',
+                execute: (args) => dockerCommand(args)
+            },
+            curl: {
+                description: 'Transfer data from URLs',
+                usage: 'curl [url]',
+                execute: (args) => curl(args)
+            },
+            wget: {
+                description: 'Download files',
+                usage: 'wget [url]',
+                execute: (args) => wget(args)
+            },
+            top: {
+                description: 'Display system processes',
+                usage: 'top',
+                execute: () => showTop()
+            },
+            df: {
+                description: 'Disk space usage',
+                usage: 'df [-h]',
+                execute: (args) => diskFree(args)
+            },
+            du: {
+                description: 'Disk usage',
+                usage: 'du [-sh] [path]',
+                execute: (args) => diskUsage(args)
+            },
+            ifconfig: {
+                description: 'Network interface config',
+                usage: 'ifconfig',
+                execute: () => showNetwork()
+            },
+            ping: {
+                description: 'Send ICMP echo request',
+                usage: 'ping [host]',
+                execute: (args) => ping(args)
+            },
+            netstat: {
+                description: 'Network statistics',
+                usage: 'netstat [-an]',
+                execute: (args) => netstat(args)
+            },
+            env: {
+                description: 'Display environment variables',
+                usage: 'env',
+                execute: () => showEnv()
+            },
+            export: {
+                description: 'Set environment variable',
+                usage: 'export KEY=VALUE',
+                execute: (args) => exportVar(args)
+            },
+            alias: {
+                description: 'Create command alias',
+                usage: 'alias [name=command]',
+                execute: (args) => createAlias(args)
+            },
+            history: {
+                description: 'Show command history',
+                usage: 'history',
+                execute: () => showHistory()
+            },
+            exit: {
+                description: 'Exit the terminal',
+                usage: 'exit',
+                execute: () => exitTerminal()
+            }
+        };
+
+        // Current directory
+        let currentDir = '/home/user/project';
+        
+        // Filesystem simulation
+        let filesystem = {
+            '/': {
+                type: 'dir',
+                children: ['home', 'usr', 'bin', 'etc']
+            },
+            '/home': {
+                type: 'dir',
+                children: ['user']
+            },
+            '/home/user': {
+                type: 'dir',
+                children: ['project', 'Documents', 'Downloads']
+            },
+            '/home/user/project': {
+                type: 'dir',
+                children: ['index.html', 'style.css', 'script.js', 'node_modules']
+            },
+            '/home/user/project/index.html': {
+                type: 'file',
+                size: 347,
+                content: '<!DOCTYPE html>...'
+            },
+            '/home/user/project/style.css': {
+                type: 'file',
+                size: 1250,
+                content: 'body { ... }'
+            },
+            '/home/user/project/script.js': {
+                type: 'file',
+                size: 856,
+                content: 'console.log(...)'
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInput();
+            loadCommandHistory();
+            focusInput();
+        });
+
+        // Setup input
+        function setupInput() {
+            const input = document.getElementById('terminalInput');
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    executeCommand(this.value);
+                    this.value = '';
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateHistory(-1);
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateHistory(1);
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    autocomplete(this.value);
+                }
+            });
+            
+            input.addEventListener('input', function() {
+                showSuggestions(this.value);
+            });
+        }
+
+        // Execute command
+        function executeCommand(input) {
+            if (!input.trim()) return;
+            
+            // Add to history
+            commandHistory.push(input);
+            historyIndex = commandHistory.length;
+            saveCommandHistory();
+            
+            // Parse command
+            const args = input.trim().split(' ');
+            const cmd = args[0].toLowerCase();
+            const cmdArgs = args.slice(1);
+            
+            // Display command in output
+            addOutput(`<span class="output-prompt">user@amkyaw:${currentDir}$</span> <span class="output-command">${input}</span>`);
+            
+            // Execute
+            if (commands[cmd]) {
+                commands[cmd].execute(cmdArgs);
+            } else {
+                addOutput(`Command not found: ${cmd}. Type 'help' for available commands.`, 'error');
+            }
+        }
+
+        // Add output to terminal
+        function addOutput(text, type = 'normal') {
+            const output = document.getElementById('terminalOutput');
+            const line = document.createElement('div');
+            line.className = `output-line ${type}`;
+            line.innerHTML = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Help command
+        function showHelp(args) {
+            if (args.length > 0) {
+                const cmd = args[0];
+                if (commands[cmd]) {
+                    addOutput(`${cmd} - ${commands[cmd].description}`);
+                    addOutput(`Usage: ${commands[cmd].usage}`);
+                } else {
+                    addOutput(`No help available for '${cmd}'`, 'error');
+                }
+            } else {
+                addOutput('Available commands:');
+                Object.keys(commands).sort().forEach(cmd => {
+                    addOutput(`  ${cmd.padEnd(12)} - ${commands[cmd].description}`);
+                });
+            }
+        }
+
+        // List files
+        function listFiles(args) {
+            const showAll = args.includes('-la') || args.includes('-l');
+            const path = args.find(a => !a.startsWith('-')) || currentDir;
+            
+            addOutput(`Contents of ${path}:`);
+            if (filesystem[path] && filesystem[path].type === 'dir') {
+                filesystem[path].children.forEach(item => {
+                    const fullPath = path === '/' ? '/' + item : path + '/' + item;
+                    const type = filesystem[fullPath] ? filesystem[fullPath].type : 'file';
+                    const icon = type === 'dir' ? '📁' : '📄';
+                    addOutput(`${icon} ${item}`);
+                });
+            } else {
+                addOutput(`ls: cannot access '${path}': No such directory`, 'error');
+            }
+        }
+
+        // Change directory
+        function changeDirectory(args) {
+            const target = args[0] || '/home/user/project';
+            let newPath;
+            
+            if (target === '..') {
+                newPath = currentDir.split('/').slice(0, -1).join('/') || '/';
+            } else if (target.startsWith('/')) {
+                newPath = target;
+            } else {
+                newPath = currentDir + (currentDir.endsWith('/') ? '' : '/') + target;
+            }
+            
+            if (filesystem[newPath] && filesystem[newPath].type === 'dir') {
+                currentDir = newPath;
+                updatePrompt();
+            } else {
+                addOutput(`cd: no such directory: ${target}`, 'error');
+            }
+        }
+
+        // Print working directory
+        function printWorkingDirectory() {
+            addOutput(currentDir);
+        }
+
+        // Display file
+        function displayFile(args) {
+            if (args.length === 0) {
+                addOutput('cat: missing file operand', 'error');
+                return;
+            }
+            
+            const filename = args[0];
+            const path = filename.startsWith('/') ? filename : currentDir + '/' + filename;
+            
+            if (filesystem[path] && filesystem[path].type === 'file') {
+                addOutput(filesystem[path].content);
+            } else {
+                addOutput(`cat: ${filename}: No such file`, 'error');
+            }
+        }
+
+        // Echo text
+        function echoText(args) {
+            addOutput(args.join(' '));
+        }
+
+        // Clear terminal
+        function clearTerminal() {
+            document.getElementById('terminalOutput').innerHTML = '';
+            addOutput('<span class="output-prompt">[system]</span> Terminal cleared', 'system');
+        }
+
+        // Show date
+        function showDate() {
+            addOutput(new Date().toString());
+        }
+
+        // Show user
+        function showUser() {
+            addOutput('developer');
+        }
+
+        // Show processes
+        function showProcesses(args) {
+            addOutput('  PID  PPID  COMMAND');
+            addOutput(' 1234  1233  bash');
+            addOutput(' 1235  1234  python app.py');
+            addOutput(' 1236  1234  npm run dev');
+        }
+
+        // Kill process
+        function killProcess(args) {
+            if (args.length === 0) {
+                addOutput('kill: missing PID', 'error');
+                return;
+            }
+            addOutput(`Process ${args[0]} terminated`, 'success');
+        }
+
+        // Make directory
+        function makeDirectory(args) {
+            if (args.length === 0) {
+                addOutput('mkdir: missing operand', 'error');
+                return;
+            }
+            addOutput(`Directory '${args[0]}' created`, 'success');
+        }
+
+        // Create file
+        function createFile(args) {
+            if (args.length === 0) {
+                addOutput('touch: missing file operand', 'error');
+                return;
+            }
+            addOutput(`File '${args[0]}' created`, 'success');
+        }
+
+        // Remove
+        function remove(args) {
+            if (args.length === 0) {
+                addOutput('rm: missing operand', 'error');
+                return;
+            }
+            addOutput(`Removed '${args[args.length - 1]}'`, 'success');
+        }
+
+        // Copy
+        function copy(args) {
+            if (args.length < 2) {
+                addOutput('cp: missing file operands', 'error');
+                return;
+            }
+            addOutput(`Copied '${args[0]}' to '${args[1]}'`, 'success');
+        }
+
+        // Move
+        function move(args) {
+            if (args.length < 2) {
+                addOutput('mv: missing file operands', 'error');
+                return;
+            }
+            addOutput(`Moved '${args[0]}' to '${args[1]}'`, 'success');
+        }
+
+        // Grep
+        function grep(args) {
+            if (args.length < 2) {
+                addOutput('grep: missing pattern or file', 'error');
+                return;
+            }
+            addOutput(`Found matches in ${args[1]}:`);
+            addOutput(`  line 10: ${args[0]} example`);
+        }
+
+        // Find
+        function find(args) {
+            addOutput('Finding files...');
+            addOutput('./index.html');
+            addOutput('./style.css');
+            addOutput('./script.js');
+        }
+
+        // Change mode
+        function changeMode(args) {
+            if (args.length < 2) {
+                addOutput('chmod: missing mode or file', 'error');
+                return;
+            }
+            addOutput(`Changed permissions of '${args[1]}' to ${args[0]}`, 'success');
+        }
+
+        // SSH
+        function ssh(args) {
+            if (args.length === 0) {
+                addOutput('ssh: missing host', 'error');
+                return;
+            }
+            addOutput(`Connecting to ${args[0]}...`, 'system');
+            setTimeout(() => {
+                addOutput('Connected!', 'success');
+            }, 1000);
+        }
+
+        // Secure copy
+        function secureCopy(args) {
+            if (args.length < 2) {
+                addOutput('scp: missing source or destination', 'error');
+                return;
+            }
+            addOutput(`Copying ${args[0]} to ${args[1]}...`, 'system');
+            setTimeout(() => {
+                addOutput('Copy complete!', 'success');
+            }, 1500);
+        }
+
+        // Git command
+        function gitCommand(args) {
+            if (args.length === 0) {
+                addOutput('git: missing command', 'error');
+                return;
+            }
+            
+            switch(args[0]) {
+                case 'status':
+                    addOutput('On branch main');
+                    addOutput('Your branch is up to date');
+                    addOutput('nothing to commit', 'success');
+                    break;
+                case 'branch':
+                    addOutput('* main');
+                    addOutput('  develop');
+                    break;
+                case 'log':
+                    addOutput('commit a1b2c3d4e5f6g7h8');
+                    addOutput('Author: Developer <dev@amkyaw.dev>');
+                    addOutput('Date:   Tue Mar 15 14:32:45 2025 +0800');
+                    addOutput('    Updated project files');
+                    break;
+                default:
+                    addOutput(`git ${args[0]}: command executed`, 'success');
+            }
+        }
+
+        // NPM command
+        function npmCommand(args) {
+            if (args.length === 0) {
+                addOutput('npm: missing command', 'error');
+                return;
+            }
+            
+            switch(args[0]) {
+                case 'install':
+                    addOutput('Installing packages...', 'system');
+                    setTimeout(() => {
+                        addOutput('✅ Added 150 packages', 'success');
+                    }, 2000);
+                    break;
+                case 'run':
+                    addOutput(`Running ${args[1] || 'dev'}...`, 'system');
+                    addOutput('> project@1.0.0 dev');
+                    addOutput('Server running at http://localhost:3000', 'success');
+                    break;
+                default:
+                    addOutput(`npm ${args[0]}: command executed`, 'success');
+            }
+        }
+
+        // Python command
+        function pythonCommand(args) {
+            if (args.length === 0) {
+                addOutput('Python 3.9.7');
+                addOutput('Type "help" for more information');
+                return;
+            }
+            
+            addOutput(`Running Python script ${args[0]}...`, 'system');
+            addOutput('Hello from Python!');
+            addOutput('Execution complete', 'success');
+        }
+
+        // Docker command
+        function dockerCommand(args) {
+            if (args.length === 0) {
+                addOutput('docker: missing command', 'error');
+                return;
+            }
+            
+            switch(args[0]) {
+                case 'ps':
+                    addOutput('CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES');
+                    break;
+                case 'images':
+                    addOutput('REPOSITORY   TAG       IMAGE ID       CREATED       SIZE');
+                    addOutput('node         16        a1b2c3d4e5f6   2 weeks ago   900MB');
+                    break;
+                default:
+                    addOutput(`docker ${args[0]}: command executed`, 'success');
+            }
+        }
+
+        // Curl
+        function curl(args) {
+            if (args.length === 0) {
+                addOutput('curl: missing URL', 'error');
+                return;
+            }
+            
+            addOutput(`Fetching ${args[0]}...`, 'system');
+            addOutput('HTTP/1.1 200 OK');
+            addOutput('Content-Type: application/json');
+            addOutput('{');
+            addOutput('  "name": "amkyaw.dev",');
+            addOutput('  "version": "2.0.0"');
+            addOutput('}');
+        }
+
+        // Wget
+        function wget(args) {
+            if (args.length === 0) {
+                addOutput('wget: missing URL', 'error');
+                return;
+            }
+            
+            addOutput(`Downloading ${args[0]}...`, 'system');
+            for (let i = 0; i <= 100; i += 20) {
+                setTimeout(() => {
+                    addOutput(`Progress: ${i}%`);
+                }, i * 50);
+            }
+        }
+
+        // Show top
+        function showTop() {
+            addOutput('top - 14:32:45 up 2 days, load average: 0.08, 0.03, 0.01');
+            addOutput('Tasks: 123 total, 1 running, 122 sleeping');
+            addOutput('CPU: 2% us, 1% sy, 0% ni, 97% id');
+            addOutput('Mem: 7982M total, 3245M used, 4737M free');
+        }
+
+        // Disk free
+        function diskFree(args) {
+            addOutput('Filesystem      Size  Used Avail Use% Mounted on');
+            addOutput('/dev/sda1       98G   45G   53G  46% /');
+        }
+
+        // Disk usage
+        function diskUsage(args) {
+            const path = args[args.length - 1] || '.';
+            addOutput(`4.0K    ${path}/node_modules`);
+            addOutput(`1.2M    ${path}/index.html`);
+            addOutput(`2.5M    ${path}/style.css`);
+            addOutput(`1.8M    ${path}/script.js`);
+        }
+
+        // Show network
+        function showNetwork() {
+            addOutput('eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500');
+            addOutput('        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255');
+            addOutput('        ether 00:1a:2b:3c:4d:5e  txqueuelen 1000');
+        }
+
+        // Ping
+        function ping(args) {
+            if (args.length === 0) {
+                addOutput('ping: missing host', 'error');
+                return;
+            }
+            
+            addOutput(`PING ${args[0]} (8.8.8.8): 56 data bytes`);
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    addOutput(`64 bytes from 8.8.8.8: icmp_seq=${i} ttl=56 time=14.2ms`);
+                }, i * 1000);
+            }
+        }
+
+        // Netstat
+        function netstat(args) {
+            addOutput('Active Internet connections');
+            addOutput('Proto Recv-Q Send-Q Local Address           Foreign Address         State');
+            addOutput('tcp        0      0 0.0.0.0:3000            0.0.0.0:*               LISTEN');
+            addOutput('tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN');
+        }
+
+        // Show environment
+        function showEnv() {
+            addOutput('PATH=/usr/local/bin:/usr/bin:/bin');
+            addOutput('HOME=/home/user');
+            addOutput('USER=developer');
+            addOutput('SHELL=/bin/bash');
+            addOutput('TERM=xterm-256color');
+        }
+
+        // Export variable
+        function exportVar(args) {
+            if (args.length === 0) {
+                addOutput('export: missing variable', 'error');
+                return;
+            }
+            
+            const [key, value] = args[0].split('=');
+            addOutput(`Exported ${key}=${value || ''}`, 'success');
+        }
+
+        // Create alias
+        function createAlias(args) {
+            if (args.length === 0) {
+                addOutput('alias: missing name', 'error');
+                return;
+            }
+            
+            const [alias, command] = args[0].split('=');
+            addOutput(`Alias created: ${alias} -> ${command || ''}`, 'success');
+        }
+
+        // Show history
+        function showHistory() {
+            commandHistory.forEach((cmd, index) => {
+                addOutput(`  ${index + 1}  ${cmd}`);
+            });
+        }
+
+        // Exit terminal
+        function exitTerminal() {
+            addOutput('Exit terminal? (Y/n)', 'warning');
+            // In real app, would close tab
+        }
+
+        // Navigate history
+        function navigateHistory(direction) {
+            const input = document.getElementById('terminalInput');
+            historyIndex += direction;
+            
+            if (historyIndex < 0) {
+                historyIndex = 0;
+            } else if (historyIndex >= commandHistory.length) {
+                historyIndex = commandHistory.length;
+                input.value = '';
+                return;
+            }
+            
+            if (commandHistory[historyIndex]) {
+                input.value = commandHistory[historyIndex];
+            }
+        }
+
+        // Autocomplete
+        function autocomplete(input) {
+            const commands_list = Object.keys(commands);
+            const match = commands_list.find(cmd => cmd.startsWith(input));
+            
+            if (match) {
+                document.getElementById('terminalInput').value = match;
+            }
+        }
+
+        // Show suggestions
+        function showSuggestions(input) {
+            if (!input) {
+                document.getElementById('suggestions').classList.remove('show');
+                return;
+            }
+            
+            const matches = Object.keys(commands).filter(cmd => cmd.startsWith(input));
+            
+            if (matches.length > 0 && input.length > 0) {
+                const suggestions = document.getElementById('suggestions');
+                suggestions.innerHTML = matches.map(cmd => `
+                    <div class="suggestion-item" onclick="useSuggestion('${cmd}')">
+                        <i class="fas fa-terminal"></i>
+                        ${cmd}
+                    </div>
+                `).join('');
+                suggestions.classList.add('show');
+            } else {
+                document.getElementById('suggestions').classList.remove('show');
+            }
+        }
+
+        // Use suggestion
+        function useSuggestion(cmd) {
+            document.getElementById('terminalInput').value = cmd;
+            document.getElementById('suggestions').classList.remove('show');
+            focusInput();
+        }
+
+        // Save command history
+        function saveCommandHistory() {
+            localStorage.setItem('terminal_history', JSON.stringify(commandHistory));
+        }
+
+        // Load command history
+        function loadCommandHistory() {
+            const saved = localStorage.getItem('terminal_history');
+            if (saved) {
+                commandHistory = JSON.parse(saved);
+                historyIndex = commandHistory.length;
+            }
+        }
+
+        // Update prompt
+        function updatePrompt() {
+            // Update prompt display
+            const promptPath = document.querySelector('.prompt-path');
+            if (promptPath) {
+                promptPath.textContent = currentDir;
+            }
+        }
+
+        // Focus input
+        function focusInput() {
+            document.getElementById('terminalInput').focus();
+        }
+
+        // Close tab
+        function closeTab(event) {
+            event.stopPropagation();
+            const tab = event.target.closest('.terminal-tab');
+            if (confirm('Close this terminal tab?')) {
+                tab.remove();
+            }
+        }
+
+        // New tab
+        function newTab() {
+            const tabs = document.getElementById('terminalTabs');
+            const newTab = document.createElement('div');
+            newTab.className = 'terminal-tab active';
+            newTab.innerHTML = `
+                <i class="fas fa-terminal"></i>
+                new
+                <i class="fas fa-times" onclick="closeTab(event)"></i>
+            `;
+            tabs.insertBefore(newTab, tabs.lastElementChild);
+            
+            // Deactivate other tabs
+            document.querySelectorAll('.terminal-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            newTab.classList.add('active');
+        }
+
+        // Minimize terminal
+        function minimizeTerminal() {
+            // In real app, would minimize
+            showDialog('Minimize', 'Terminal minimized');
+        }
+
+        // Maximize terminal
+        function maximizeTerminal() {
+            // In real app, would maximize
+            showDialog('Maximize', 'Terminal maximized');
+        }
+
+        // Close terminal
+        function closeTerminal() {
+            if (confirm('Close terminal?')) {
+                window.location.href = '../coder.html';
+            }
+        }
+
+        // Show dialog
+        function showDialog(title, content) {
+            const overlay = document.getElementById('dialogOverlay');
+            document.getElementById('dialogTitle').textContent = title;
+            document.getElementById('dialogContent').innerHTML = `<p>${content}</p>`;
+            overlay.classList.add('show');
+        }
+
+        // Close dialog
+        function closeDialog() {
+            document.getElementById('dialogOverlay').classList.remove('show');
+        }
+
+        // Refresh processes
+        function refreshProcesses() {
+            showDialog('Refresh', 'Process list refreshed');
+        }
+
+        // Add environment variable
+        function addEnvVar() {
+            showDialog('Add Environment Variable', `
+                <input type="text" class="dialog-input" placeholder="KEY=VALUE">
+                <div class="dialog-buttons">
+                    <button class="dialog-btn secondary" onclick="closeDialog()">Cancel</button>
+                    <button class="dialog-btn primary" onclick="addEnvVarSubmit()">Add</button>
+                </div>
+            `);
+        }
+
+        // Add env var submit
+        function addEnvVarSubmit() {
+            closeDialog();
+            showNotification('Environment variable added', 'success');
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                right: 30px;
+                padding: 12px 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Toggle sidebar (mobile)
+        function toggleSidebar() {
+            document.getElementById('terminalSidebar').classList.toggle('open');
+        }
+
+        // Click outside to close suggestions
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.input-wrapper')) {
+                document.getElementById('suggestions').classList.remove('show');
+            }
+        });
+
+        // Focus input on any key
+        document.addEventListener('keydown', function(e) {
+            if (!e.target.closest('input') && !e.target.closest('.dialog')) {
+                focusInput();
+            }
+        });
+
+        // Add styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .terminal-sidebar {
+                    display: none;
+                }
+                .terminal-sidebar.open {
+                    display: flex;
+                }
+                .mobile-toggle {
+                    display: flex !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
