@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "include": [
+    "/*"
+  ],
+  "exclude": [],
+  "routes": [
+    {
+      "pattern": "/",
+      "destination": "/index.html",
+      "status": 200
+    },
+    {
+      "pattern": "/index.html",
+      "destination": "/index.html",
+      "status": 200
+    },
+    {
+      "pattern": "/auth/*",
+      "destination": "/auth/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/pages/*",
+      "destination": "/pages/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/coder/*",
+      "destination": "/pages/coder/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/js/*",
+      "destination": "/js/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/css/*",
+      "destination": "/css/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/components/*",
+      "destination": "/components/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/img/*",
+      "destination": "/img/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/lug/*",
+      "destination": "/lug/:splat",
+      "status": 200
+    },
+    {
+      "pattern": "/server/*",
+      "destination": "/server/:splat",
+      "status": 200
+    }
+  ]
+}

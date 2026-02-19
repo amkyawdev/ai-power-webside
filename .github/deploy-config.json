@@ -1,0 +1,12 @@
+{
+  "projectName": "amkyaw-dev",
+  "type": "web",
+  "buildCommand": "echo 'Static site - no build required'",
+  "outputDirectory": ".",
+  "environment": "production",
+  "compatibilityDate": "2026-02-19",
+  "nodeVersion": "18",
+  "installCommand": "npm install",
+  "gitIntegration": true,
+  "deploymentTrigger": "automatic"
+}
