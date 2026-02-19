@@ -1,0 +1,159 @@
+/* ===== AUTH SHARED STYLES ===== */
+
+/* Animation Keyframes */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Loading States */
+.auth-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.auth-btn.loading .btn-text {
+    display: none;
+}
+
+.auth-btn.loading .btn-loader {
+    display: inline-block;
+}
+
+.btn-loader {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: rotate 1s linear infinite;
+}
+
+/* Form Validation Styles */
+.input-group.error .input-field {
+    border-color: #ef4444;
+    animation: shake 0.5s ease;
+}
+
+.input-group.success .input-field {
+    border-color: #10b981;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Floating Labels */
+.input-group.floating {
+    position: relative;
+}
+
+.input-group.floating .input-field {
+    padding-top: 24px;
+    padding-bottom: 8px;
+}
+
+.input-group.floating label {
+    position: absolute;
+    left: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-group.floating .input-field:focus ~ label,
+.input-group.floating .input-field:not(:placeholder-shown) ~ label {
+    top: 20%;
+    font-size: 0.75rem;
+    color: #667eea;
+}
+
+/* Social Login Hover Effects */
+.social-icon {
+    position: relative;
+    overflow: hidden;
+}
+
+.social-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.social-icon:hover::after {
+    width: 100px;
+    height: 100px;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    .auth-header h2 {
+        font-size: 2rem;
+    }
+    
+    .auth-header p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .auth-card {
+        background: rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Print Styles */
+@media print {
+    #canvas-bg,
+    .back-home,
+    .social-login {
+        display: none;
+    }
+    
+    .auth-card {
+        background: white;
+        color: black;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .auth-header h2 {
+        color: black;
+        -webkit-text-fill-color: black;
+    }
+}

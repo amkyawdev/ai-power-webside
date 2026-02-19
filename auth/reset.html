@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>amkyaw.dev - Reset Password</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Reset your amkyaw.dev password">
+    <meta name="keywords" content="reset password, forgot password, account recovery">
+    <meta name="author" content="Aung Thu Rain">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <style>
+        /* Same base styles as login/register */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+        
+        #auth-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .auth-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: cardFloat 0.8s ease-out;
+        }
+        
+        @keyframes cardFloat {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .auth-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #a0a0ff, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .auth-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+        
+        .input-field:focus + .input-icon {
+            color: #667eea;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #9f7aea);
+            background-size: 200% 200%;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 25px;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .auth-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -5px rgba(102, 126, 234, 0.5);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-link a:hover {
+            color: white;
+            transform: translateX(-5px);
+        }
+        
+        .reset-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .reset-info i {
+            color: #667eea;
+            margin-right: 10px;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-message i {
+            font-size: 80px;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        
+        .success-message h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .success-message p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .back-home:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+            color: white;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+            
+            .auth-header h2 {
+                font-size: 2rem;
+            }
+            
+            .back-home {
+                top: 20px;
+                left: 20px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="auth-container">
+        <!-- Canvas for 3D Background -->
+        <canvas id="canvas-bg"></canvas>
+        
+        <!-- Back to Home Link -->
+        <a href="../index.html" class="back-home">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+        
+        <!-- Reset Password Card -->
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Reset Password</h2>
+                <p>We'll send you a reset link</p>
+            </div>
+            
+            <!-- Reset Form -->
+            <div id="resetForm">
+                <div class="reset-info">
+                    <i class="fas fa-info-circle"></i>
+                    Enter your email address and we'll send you a link to reset your password.
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" class="input-field" id="email" placeholder="Email Address" autocomplete="email">
+                </div>
+                
+                <button class="auth-btn" onclick="handleReset()" id="resetBtn">
+                    <span class="btn-text">Send Reset Link</span>
+                    <span class="btn-loader" style="display: none;"></span>
+                </button>
+                
+                <div class="back-link">
+                    <a href="login.html">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <h3>Check Your Email</h3>
+                <p>We've sent a password reset link to your email address. Please check your inbox and follow the instructions.</p>
+                <a href="login.html" style="color: #667eea; text-decoration: none;">Return to Login</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div class="notification" id="notification">
+        <i class="fas" id="notificationIcon"></i>
+        <span id="notificationMessage"></span>
+        <i class="fas fa-times notification-close" onclick="hideNotification()"></i>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
+            authDomain: "smart-burme-app.firebaseapp.com",
+            projectId: "smart-burme-app",
+            storageBucket: "smart-burme-app.appspot.com",
+            messagingSenderId: "851502425686",
+            appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        // 3D Background Animation
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        
+        const particles = [];
+        const particleCount = Math.min(80, Math.floor(window.innerWidth * 0.04));
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 3 + 1,
+                speedX: (Math.random() - 0.5) * 0.3,
+                speedY: (Math.random() - 0.5) * 0.3,
+                color: `rgba(102, 126, 234, ${Math.random() * 0.5})`
+            });
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, canvas.width/2
+            );
+            gradient.addColorStop(0, '#0a0a1a');
+            gradient.addColorStop(1, '#1a1a3a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                
+                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Show/Hide Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            notification.className = 'notification show ' + type;
+            messageEl.textContent = message;
+            
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle';
+            }
+            
+            setTimeout(hideNotification, 3000);
+        }
+        
+        function hideNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+        
+        // Validate Email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Handle Password Reset
+        async function handleReset() {
+            const email = document.getElementById('email').value.trim();
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (!validateEmail(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Show loading
+            resetBtn.classList.add('loading');
+            resetBtn.querySelector('.btn-text').style.display = 'none';
+            resetBtn.querySelector('.btn-loader').style.display = 'inline-block';
+            
+            try {
+                await auth.sendPasswordResetEmail(email, {
+                    url: window.location.origin + '/auth/login.html',
+                    handleCodeInApp: false
+                });
+                
+                // Hide form, show success
+                document.getElementById('resetForm').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+                
+            } catch (error) {
+                console.error('Reset error:', error);
+                
+                let errorMessage = 'Failed to send reset email. Please try again.';
+                switch(error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many requests. Please try again later.';
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                
+                // Reset button
+                resetBtn.classList.remove('loading');
+                resetBtn.querySelector('.btn-text').style.display = 'inline';
+                resetBtn.querySelector('.btn-loader').style.display = 'none';
+            }
+        }
+        
+        // Enter key support
+        document.getElementById('email').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleReset();
+            }
+        });
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
+        
+        // Check for email in URL (from signup)
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if (email) {
+            document.getElementById('email').value = email;
+        }
+    </script>
+</body>
+</html>
