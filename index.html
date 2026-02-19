@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>amkyaw.dev - Future of Web Development</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="amkyaw.dev - AI-powered web development platform with 3D animations, code editor, and intelligent chat assistant">
+    <meta name="keywords" content="web development, AI, code editor, 3D, Myanmar, developer tools">
+    <meta name="author" content="Aung Thu Rain">
+    <meta property="og:title" content="amkyaw.dev - Future of Web Development">
+    <meta property="og:description" content="Experience the next generation of web development with AI assistance">
+    <meta property="og:image" content="../img/og-image.jpg">
+    <meta property="og:url" content="https://amkyaw.dev">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/index.css">
+    
+    <style>
+        /* Additional styles for loader page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+        
+        #loader-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            width: 90%;
+            max-width: 800px;
+            animation: floatIn 1.5s ease-out;
+        }
+        
+        @keyframes floatIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -30%);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .glitch-title {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                        -0.05em -0.025em 0 rgba(0, 255, 255, 0.75),
+                        0.025em 0.05em 0 rgba(0, 255, 0, 0.75);
+            animation: glitch 500ms infinite;
+            letter-spacing: 4px;
+        }
+        
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                            -0.05em -0.025em 0 rgba(0, 255, 255, 0.75),
+                            0.025em 0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            14% {
+                text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                            -0.05em -0.025em 0 rgba(0, 255, 255, 0.75),
+                            0.025em 0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            15% {
+                text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                            0.025em 0.025em 0 rgba(0, 255, 255, 0.75),
+                            -0.05em -0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            49% {
+                text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                            0.025em 0.025em 0 rgba(0, 255, 255, 0.75),
+                            -0.05em -0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                            0.05em 0 0 rgba(0, 255, 255, 0.75),
+                            0 -0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            99% {
+                text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                            0.05em 0 0 rgba(0, 255, 255, 0.75),
+                            0 -0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+            100% {
+                text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+                            -0.025em -0.025em 0 rgba(0, 255, 255, 0.75),
+                            -0.025em -0.05em 0 rgba(0, 255, 0, 0.75);
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 0.5s;
+            background: linear-gradient(135deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 0.8s;
+        }
+        
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2, #9f7aea);
+            background-size: 200% 200%;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px -5px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+        
+        .stats-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 60px;
+            color: white;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 1.1s;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .floating-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 2rem;
+            animation: float 6s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        .element-1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .element-2 { top: 70%; right: 15%; animation-delay: 1s; }
+        .element-3 { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .element-4 { top: 40%; right: 25%; animation-delay: 3s; }
+        
+        .loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #9f7aea, #667eea);
+            background-size: 300% 100%;
+            animation: loading 2s ease-in-out infinite, gradientMove 2s linear infinite;
+            width: 0%;
+            z-index: 20;
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .version-badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: white;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInRight 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+        
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: particleFloat 3s infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(20px);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glitch-title {
+                font-size: 3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+            
+            .stats-container {
+                gap: 30px;
+                bottom: 20px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .version-badge {
+                top: 20px;
+                right: 20px;
+                padding: 6px 15px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .glitch-title {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .button-group {
+                gap: 15px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+                width: 200px;
+            }
+            
+            .stats-container {
+                gap: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+                bottom: 15px;
+            }
+            
+            .stat-item {
+                min-width: 80px;
+            }
+        }
+        
+        /* Demo mode indicator */
+        .demo-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInLeft 0.8s ease forwards 1.4s;
+        }
+        
+        @keyframes fadeInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+        }
+        
+        .demo-badge {
+            padding: 6px 15px;
+            background: rgba(255, 193, 7, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: #ffc107;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .demo-badge i {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader-container">
+        <!-- Three.js Canvas Container -->
+        <div id="canvas-container"></div>
+        
+        <!-- Floating Background Elements -->
+        <div class="floating-elements">
+            <div class="floating-element element-1"><i class="fas fa-code"></i></div>
+            <div class="floating-element element-2"><i class="fas fa-robot"></i></div>
+            <div class="floating-element element-3"><i class="fas fa-cloud"></i></div>
+            <div class="floating-element element-4"><i class="fas fa-crown"></i></div>
+        </div>
+        
+        <!-- Version Badge -->
+        <div class="version-badge">
+            <i class="fas fa-code-branch"></i> v2.0.0
+        </div>
+        
+        <!-- Main Content -->
+        <div id="content">
+            <h1 class="glitch-title">amkyaw.dev</h1>
+            <p class="subtitle">Where Code Meets Intelligence</p>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="handleLogin()" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Get Started
+                </button>
+                <button class="btn btn-secondary" onclick="handleDemo()" id="demoBtn">
+                    <i class="fas fa-play"></i> Try Demo
+                </button>
+            </div>
+            
+            <!-- Features Pills -->
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+                <span style="padding: 5px 15px; background: rgba(255,255,255,0.1); border-radius: 50px; font-size: 0.85rem; backdrop-filter: blur(5px;">
+                    <i class="fas fa-bolt" style="color: #ffd700;"></i> AI-Powered
+                </span>
+                <span style="padding: 5px 15px; background: rgba(255,255,255,0.1); border-radius: 50px; font-size: 0.85rem; backdrop-filter: blur(5px;">
+                    <i class="fas fa-cube" style="color: #667eea;"></i> 3D Interactive
+                </span>
+                <span style="padding: 5px 15px; background: rgba(255,255,255,0.1); border-radius: 50px; font-size: 0.85rem; backdrop-filter: blur(5px;">
+                    <i class="fas fa-cloud" style="color: #48bb78;"></i> Cloud Sync
+                </span>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">5K+</div>
+                <div class="stat-label">Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Chats</div>
+            </div>
+        </div>
+        
+        <!-- Demo Mode Indicator -->
+        <div class="demo-indicator">
+            <div class="demo-badge">
+                <i class="fas fa-star"></i>
+                <span>3 Free Demos Available</span>
+            </div>
+        </div>
+        
+        <!-- Loading Bar -->
+        <div class="loading-bar"></div>
+    </div>
+    
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/index.js"></script>
+    
+    <script>
+        // Handle login button click
+        function handleLogin() {
+            // Add click animation
+            const btn = document.getElementById('loginBtn');
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                // Redirect to login page
+                window.location.href = 'auth/login.html';
+            }, 200);
+        }
+        
+        // Handle demo button click
+        function handleDemo() {
+            const btn = document.getElementById('demoBtn');
+            btn.style.transform = 'scale(0.95)';
+            
+            // Check demo attempts
+            const demoAttempts = localStorage.getItem('demo_attempts');
+            const attempts = demoAttempts ? parseInt(demoAttempts) : 0;
+            
+            if (attempts >= 3) {
+                // Show sweet alert or custom modal
+                alert('You have used all 3 demo attempts. Please login to continue.');
+                setTimeout(() => {
+                    window.location.href = 'auth/login.html';
+                }, 500);
+            } else {
+                // Increment attempts
+                localStorage.setItem('demo_attempts', (attempts + 1).toString());
+                
+                setTimeout(() => {
+                    btn.style.transform = '';
+                    // Redirect to dashboard with demo mode
+                    window.location.href = 'pages/dashboard.html?mode=demo';
+                }, 200);
+            }
+        }
+        
+        // Create particle effects
+        function createParticles() {
+            const container = document.getElementById('loader-container');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = Math.random() * 2 + 2 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles
+        createParticles();
+        
+        // Prefetch auth pages for faster loading
+        const prefetchLinks = ['auth/login.html', 'auth/register.html', 'pages/dashboard.html'];
+        prefetchLinks.forEach(link => {
+            const prefetch = document.createElement('link');
+            prefetch.rel = 'prefetch';
+            prefetch.href = link;
+            document.head.appendChild(prefetch);
+        });
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Press 'L' for login
+            if (e.key === 'l' || e.key === 'L') {
+                handleLogin();
+            }
+            // Press 'D' for demo
+            if (e.key === 'd' || e.key === 'D') {
+                handleDemo();
+            }
+        });
+        
+        // Dynamic greeting based on time
+        const hour = new Date().getHours();
+        const subtitle = document.querySelector('.subtitle');
+        let greeting = '';
+        
+        if (hour < 12) {
+            greeting = 'Good Morning!';
+        } else if (hour < 18) {
+            greeting = 'Good Afternoon!';
+        } else {
+            greeting = 'Good Evening!';
+        }
+        
+        // Add greeting to subtitle
+        if (subtitle) {
+            subtitle.innerHTML = `${greeting} Where Code Meets Intelligence`;
+        }
+        
+        // Check for existing session
+        const user = localStorage.getItem('user');
+        if (user) {
+            // User already logged in, show different button text
+            document.getElementById('loginBtn').innerHTML = '<i class="fas fa-tachometer-alt"></i> Go to Dashboard';
+        }
+        
+        // Mouse move parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+            
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach((el, index) => {
+                const speed = (index + 1) * 20;
+                const x = mouseX * speed;
+                const y = mouseY * speed;
+                el.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Prevent right click context menu
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // Add touch effects for mobile
+        if ('ontouchstart' in window) {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+        }
+        
+        // Performance optimization
+        window.addEventListener('load', () => {
+            // Remove loading bar after everything is loaded
+            setTimeout(() => {
+                document.querySelector('.loading-bar').style.opacity = '0';
+            }, 2000);
+        });
+        
+        // Handle offline/online status
+        window.addEventListener('online', () => {
+            console.log('Back online');
+        });
+        
+        window.addEventListener('offline', () => {
+            alert('You are offline. Some features may not work properly.');
+        });
+        
+        // Log visit for analytics
+        console.log('Welcome to amkyaw.dev - Future of Web Development');
+        console.log('Visit our documentation at /docs for more info');
+    </script>
+</body>
+</html>
