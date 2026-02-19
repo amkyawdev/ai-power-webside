@@ -1,17 +1,13 @@
 {
-  "name": "amkyawdev",
-  "version": "1.0.0",
+  "name": "amkyaw-dev",
+  "version": "2.0.0",
   "private": true,
-  "description": "Cloudflare Worker to serve AI-powered webside from GitHub repo",
-  "author": "Aung Thu Rain",
   "scripts": {
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev"
+    "build": "echo \"No build step required\"",
+    "deploy": "wrangler pages deploy ./ --project-name=amkyaw-dev",
+    "preview": "wrangler pages dev ./"
   },
   "devDependencies": {
     "wrangler": "^4.66.0"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
