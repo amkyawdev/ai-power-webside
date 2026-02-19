@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - About</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: white; }
+        
+        .about-container { max-width: 1000px; margin: 0 auto; padding: 30px; }
+        
+        /* Header */
+        .about-header { text-align: center; margin-bottom: 50px; }
+        .about-header h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .about-header p { font-size: 1.2rem; opacity: 0.9; }
+        
+        /* Main Content */
+        .about-content { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 30px; padding: 40px; margin-bottom: 30px; }
+        
+        /* Profile Section */
+        .profile-section { display: flex; align-items: center; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; }
+        .profile-image { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .profile-info { flex: 1; }
+        .profile-info h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .profile-info .title { font-size: 1.2rem; opacity: 0.9; margin-bottom: 20px; }
+        .contact-info { display: flex; gap: 20px; flex-wrap: wrap; }
+        .contact-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 50px; }
+        
+        /* Admin Button */
+        .admin-section { text-align: center; margin: 40px 0; }
+        .admin-btn { padding: 15px 40px; background: linear-gradient(45deg, #667eea, #764ba2); border: none; border-radius: 50px; color: white; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .admin-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5); border-color: white; }
+        
+        /* Stats Section */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin: 50px 0; }
+        .stat-card { text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 20px; }
+        .stat-number { font-size: 3rem; font-weight: bold; margin-bottom: 10px; background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 1.1rem; opacity: 0.8; }
+        
+        /* Features */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin: 50px 0; }
+        .feature-item { text-align: center; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 20px; transition: transform 0.3s; }
+        .feature-item:hover { transform: translateY(-10px); background: rgba(255,255,255,0.1); }
+        .feature-icon { font-size: 3rem; margin-bottom: 20px; color: #667eea; }
+        .feature-title { font-size: 1.3rem; margin-bottom: 10px; }
+        .feature-description { opacity: 0.8; line-height: 1.6; }
+        
+        /* Timeline */
+        .timeline { margin: 50px 0; position: relative; }
+        .timeline::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: rgba(255,255,255,0.2); }
+        .timeline-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; position: relative; }
+        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+        .timeline-content { width: 45%; padding: 30px; background: rgba(255,255,255,0.1); border-radius: 20px; }
+        .timeline-date { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #667eea; }
+        .timeline-dot { width: 20px; height: 20px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%); border: 3px solid white; }
+        
+        /* Team Section */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 40px; }
+        .team-member { text-align: center; }
+        .member-avatar { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 20px; background: linear-gradient(45deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .member-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; }
+        .member-role { opacity: 0.8; }
+        
+        @media (max-width: 768px) {
+            .about-container { padding: 20px; }
+            .about-header h1 { font-size: 2.5rem; }
+            .profile-section { flex-direction: column; text-align: center; }
+            .contact-info { justify-content: center; }
+            .timeline::before { left: 30px; }
+            .timeline-item, .timeline-item:nth-child(even) { flex-direction: column; align-items: flex-start; }
+            .timeline-content { width: 100%; margin-left: 60px; }
+            .timeline-dot { left: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="about-container">
+        <!-- Header -->
+        <div class="about-header">
+            <h1>About Us</h1>
+            <p>Empowering developers with AI-powered tools</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="about-content">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-image">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="profile-info">
+                    <h2>Aung Thu Rain</h2>
+                    <div class="title">Founder & Lead Developer</div>
+                    <p style="margin-bottom: 20px; line-height: 1.8;">
+                        Passionate developer with a vision to make coding accessible to everyone. 
+                        Creating tools that combine AI with web development to simplify the learning 
+                        and development process.
+                    </p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>aung.thuyrain.at449@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>09677740154</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Naypyidaw, Myanmar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Button -->
+            <div class="admin-section">
+                <button class="admin-btn" onclick="window.location.href='admin.html'">
+                    <i class="fas fa-shield-alt"></i> Admin Panel
+                </button>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">5K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Projects Created</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">AI Conversations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Tutorials</div>
+                </div>
+            </div>
+            
+            <!-- Features -->
+            <h2 style="font-size: 2rem; margin-bottom: 30px;">Why Choose Us</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <div class="feature-title">AI-Powered</div>
+                    <div class="feature-description">Get intelligent code suggestions and debugging help</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                    <div class="feature-title">Cloud Storage</div>
+                    <div class="feature-description">Save and sync projects with Google Drive</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-code"></i></div>
+                    <div class="feature-title">Multi-Language</div>
+                    <div class="feature-description">Support for HTML, CSS, JS, Python, and more</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="feature-title">Responsive</div>
+                    <div class="feature-description">Perfect experience on all devices</div>
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <h2 style="font-size: 2rem; margin: 50px 0 30px;">Our Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <h3>Project Started</h3>
+                        <p>Initial concept and development began with a vision to create an AI-powered coding platform.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2024</div>
+                        <h3>Beta Launch</h3>
+                        <p>Released beta version with core features: code editor, AI chat, and project management.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>Full Release</h3>
+                        <p>Official launch with Google Drive integration, multi-language support, and mobile apps.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+            
+            <!-- Team -->
+            <h2 style="font-size: 2rem; margin: 50px 0 30px;">Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar"><i class="fas fa-user-tie"></i></div>
+                    <div class="member-name">Aung Thu Rain</div>
+                    <div class="member-role">Founder & Lead Developer</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar"><i class="fas fa-user-cog"></i></div>
+                    <div class="member-name">Development Team</div>
+                    <div class="member-role">Core Developers</div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar"><i class="fas fa-users"></i></div>
+                    <div class="member-name">Community</div>
+                    <div class="member-role">Contributors</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Smooth scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.feature-item, .stat-card, .timeline-item');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

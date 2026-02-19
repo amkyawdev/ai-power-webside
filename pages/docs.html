@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-88">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: white; }
+        
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 30px; }
+        
+        /* Header */
+        .docs-header { text-align: center; margin-bottom: 40px; }
+        .docs-header h1 { font-size: 3rem; margin-bottom: 10px; }
+        .docs-header p { font-size: 1.2rem; opacity: 0.9; }
+        
+        /* Search Bar */
+        .search-container { max-width: 600px; margin: 0 auto 40px; position: relative; }
+        .search-input { width: 100%; padding: 15px 20px 15px 50px; border: none; border-radius: 50px; background: rgba(255,255,255,0.2); color: white; font-size: 16px; outline: none; transition: all 0.3s; }
+        .search-input:focus { background: rgba(255,255,255,0.3); box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+        .search-input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); }
+        
+        /* Categories */
+        .categories { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .category-btn { padding: 10px 25px; border-radius: 25px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+        .category-btn:hover, .category-btn.active { background: linear-gradient(45deg, #667eea, #764ba2); border-color: white; transform: translateY(-2px); }
+        
+        /* Docs Grid */
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .doc-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; cursor: pointer; }
+        .doc-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
+        .doc-icon { font-size: 2.5rem; margin-bottom: 20px; color: #667eea; }
+        .doc-title { font-size: 1.5rem; margin-bottom: 10px; }
+        .doc-description { opacity: 0.8; margin-bottom: 20px; line-height: 1.6; }
+        .doc-meta { display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,0.6); font-size: 14px; }
+        .doc-tag { padding: 5px 12px; border-radius: 15px; background: rgba(102, 126, 234, 0.3); color: white; }
+        
+        /* Quick Start Section */
+        .quick-start { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; margin-top: 50px; }
+        .quick-start h2 { font-size: 2rem; margin-bottom: 30px; }
+        .step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .step { text-align: center; }
+        .step-number { width: 50px; height: 50px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px; font-weight: bold; }
+        .step h3 { margin-bottom: 10px; }
+        .step p { opacity: 0.8; }
+        
+        /* FAQ Section */
+        .faq-section { margin-top: 50px; }
+        .faq-title { font-size: 2rem; margin-bottom: 30px; }
+        .faq-item { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; transition: background 0.3s; }
+        .faq-question:hover { background: rgba(255,255,255,0.05); }
+        .faq-answer { padding: 0 20px 20px; display: none; line-height: 1.6; opacity: 0.9; }
+        .faq-item.active .faq-answer { display: block; }
+        .faq-item.active .fa-chevron-down { transform: rotate(180deg); }
+        
+        /* Examples Section */
+        .examples-section { margin-top: 50px; }
+        .code-example { background: #1a1a1a; border-radius: 10px; padding: 20px; margin-bottom: 20px; position: relative; }
+        .code-example pre { margin: 0; color: #00ff00; font-family: 'Courier New', monospace; overflow-x: auto; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; padding: 5px 15px; background: rgba(255,255,255,0.2); border: none; border-radius: 5px; color: white; cursor: pointer; transition: all 0.3s; }
+        .copy-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        @media (max-width: 768px) {
+            .docs-container { padding: 20px; }
+            .docs-header h1 { font-size: 2rem; }
+            .docs-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Header -->
+        <div class="docs-header">
+            <h1>Documentation</h1>
+            <p>Learn how to use amkyaw.dev effectively</p>
+        </div>
+        
+        <!-- Search -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchDocs" placeholder="Search documentation...">
+        </div>
+        
+        <!-- Categories -->
+        <div class="categories">
+            <button class="category-btn active" onclick="filterDocs('all')">All</button>
+            <button class="category-btn" onclick="filterDocs('getting-started')">Getting Started</button>
+            <button class="category-btn" onclick="filterDocs('coder')">Coder</button>
+            <button class="category-btn" onclick="filterDocs('chat')">AI Chat</button>
+            <button class="category-btn" onclick="filterDocs('api')">API</button>
+            <button class="category-btn" onclick="filterDocs('tutorials')">Tutorials</button>
+        </div>
+        
+        <!-- Docs Grid -->
+        <div class="docs-grid" id="docsGrid">
+            <!-- Getting Started Cards -->
+            <div class="doc-card" data-category="getting-started">
+                <div class="doc-icon"><i class="fas fa-rocket"></i></div>
+                <h3 class="doc-title">Quick Start Guide</h3>
+                <p class="doc-description">Get started with amkyaw.dev in 5 minutes. Learn the basics of navigation and features.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 5 min read</span>
+                    <span class="doc-tag">Beginner</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="getting-started">
+                <div class="doc-icon"><i class="fas fa-user-plus"></i></div>
+                <h3 class="doc-title">Account Setup</h3>
+                <p class="doc-description">Create your account, set up profile, and configure your preferences.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 3 min read</span>
+                    <span class="doc-tag">Beginner</span>
+                </div>
+            </div>
+            
+            <!-- Coder Cards -->
+            <div class="doc-card" data-category="coder">
+                <div class="doc-icon"><i class="fas fa-code"></i></div>
+                <h3 class="doc-title">Using the Code Editor</h3>
+                <p class="doc-description">Master the code editor with syntax highlighting, auto-completion, and shortcuts.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 10 min read</span>
+                    <span class="doc-tag">Intermediate</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="coder">
+                <div class="doc-icon"><i class="fas fa-folder-open"></i></div>
+                <h3 class="doc-title">Project Management</h3>
+                <p class="doc-description">Create, organize, and manage your projects with the file explorer.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 8 min read</span>
+                    <span class="doc-tag">Intermediate</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="coder">
+                <div class="doc-icon"><i class="fas fa-terminal"></i></div>
+                <h3 class="doc-title">Terminal Commands</h3>
+                <p class="doc-description">Complete list of terminal commands and their usage.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 6 min read</span>
+                    <span class="doc-tag">Advanced</span>
+                </div>
+            </div>
+            
+            <!-- AI Chat Cards -->
+            <div class="doc-card" data-category="chat">
+                <div class="doc-icon"><i class="fas fa-robot"></i></div>
+                <h3 class="doc-title">AI Chat Assistant</h3>
+                <p class="doc-description">Learn how to effectively use the AI chat for coding help and problem-solving.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 7 min read</span>
+                    <span class="doc-tag">Beginner</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="chat">
+                <div class="doc-icon"><i class="fas fa-upload"></i></div>
+                <h3 class="doc-title">File Upload in Chat</h3>
+                <p class="doc-description">Upload and analyze files with the AI assistant.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 4 min read</span>
+                    <span class="doc-tag">Intermediate</span>
+                </div>
+            </div>
+            
+            <!-- API Cards -->
+            <div class="doc-card" data-category="api">
+                <div class="doc-icon"><i class="fas fa-plug"></i></div>
+                <h3 class="doc-title">API Integration</h3>
+                <p class="doc-description">Connect external services and use our API endpoints.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 12 min read</span>
+                    <span class="doc-tag">Advanced</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="api">
+                <div class="doc-icon"><i class="fas fa-cloud"></i></div>
+                <h3 class="doc-title">Google Drive Sync</h3>
+                <p class="doc-description">Sync your projects with Google Drive for backup and sharing.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 5 min read</span>
+                    <span class="doc-tag">Intermediate</span>
+                </div>
+            </div>
+            
+            <!-- Tutorial Cards -->
+            <div class="doc-card" data-category="tutorials">
+                <div class="doc-icon"><i class="fas fa-laptop-code"></i></div>
+                <h3 class="doc-title">Build Your First Web App</h3>
+                <p class="doc-description">Step-by-step tutorial to create a todo app using HTML, CSS, and JavaScript.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 20 min read</span>
+                    <span class="doc-tag">Tutorial</span>
+                </div>
+            </div>
+            
+            <div class="doc-card" data-category="tutorials">
+                <div class="doc-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3 class="doc-title">Responsive Design Guide</h3>
+                <p class="doc-description">Learn how to make your projects responsive for all devices.</p>
+                <div class="doc-meta">
+                    <span><i class="far fa-clock"></i> 15 min read</span>
+                    <span class="doc-tag">Tutorial</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Start Guide -->
+        <div class="quick-start">
+            <h2>Quick Start Guide</h2>
+            <div class="step-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Create Account</h3>
+                    <p>Sign up with your email or use demo mode for 3 free attempts.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Start a Project</h3>
+                    <p>Open the coder and create your first project with HTML, CSS, JS.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Use AI Assistant</h3>
+                    <p>Chat with AI for coding help, debugging, and learning.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Save & Share</h3>
+                    <p>Save to Google Drive and share your projects with others.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Code Examples -->
+        <div class="examples-section">
+            <h2 class="faq-title">Code Examples</h2>
+            
+            <div class="code-example">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My First App&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello World&lt;/h1&gt;
+    &lt;script&gt;
+        console.log("Welcome to amkyaw.dev!");
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+            
+            <div class="code-example">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><code>// JavaScript Example
+function greet(name) {
+    return `Hello, ${name}! Welcome to amkyaw.dev.`;
+}
+
+// API Call Example
+async function fetchData() {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I save my projects?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    You can save your projects in two ways: locally to your browser's storage, or to Google Drive for cloud backup. Click the save icon in the file explorer and choose your preferred method. Google Drive integration requires you to sign in with your Google account.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>What is the demo mode limit?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Demo mode allows you to try the platform for 3 free attempts. Each attempt includes 30 minutes of usage. After that, you'll need to create an account to continue using all features.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Can I use my own API keys?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Yes, in the settings page you can configure your own API keys for various services including AI models, Google Drive, and custom endpoints. This gives you more control and higher usage limits.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I collaborate with others?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    You can share your projects by saving them to Google Drive and sharing the link. We're also working on real-time collaboration features that will be available in the next update.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/docs.js"></script>
+</body>
+</html>

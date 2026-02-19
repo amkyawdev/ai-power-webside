@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amkyaw.dev - Error</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        .error-container { text-align: center; padding: 30px; max-width: 600px; }
+        
+        .error-code { font-size: 12rem; font-weight: 800; line-height: 1; margin-bottom: 20px; text-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: glitch 3s infinite; }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            92% { transform: translate(-5px, 3px); }
+            94% { transform: translate(5px, -3px); }
+            96% { transform: translate(-3px, 2px); }
+            98% { transform: translate(3px, -2px); }
+        }
+        
+        .error-title { font-size: 3rem; margin-bottom: 20px; }
+        .error-message { font-size: 1.2rem; opacity: 0.9; margin-bottom: 40px; line-height: 1.8; }
+        
+        .error-actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .error-btn { padding: 15px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-primary { background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: 2px solid transparent; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5); border-color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: translateY(-3px); }
+        
+        .error-illustration { margin: 40px 0; }
+        .error-illustration i { font-size: 8rem; opacity: 0.5; animation: float 4s ease-in-out infinite; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .search-container { max-width: 400px; margin: 40px auto; position: relative; }
+        .search-input { width: 100%; padding: 15px 20px 15px 50px; border: none; border-radius: 50px; background: rgba(255,255,255,0.2); color: white; font-size: 16px; outline: none; }
+        .search-input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); }
+        
+        .suggestions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 40px; }
+        .suggestion-item { padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .suggestion-item:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); }
+        .suggestion-item i { font-size: 2rem; margin-bottom: 10px; }
+        
+        @media (max-width: 768px) {
+            .error-code { font-size: 8rem; }
+            .error-title { font-size: 2rem; }
+            .error-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <!-- Error Code -->
+        <div class="error-code">404</div>
+        
+        <!-- Error Illustration -->
+        <div class="error-illustration">
+            <i class="fas fa-compass"></i>
+        </div>
+        
+        <!-- Error Title -->
+        <h1 class="error-title">Page Not Found</h1>
+        
+        <!-- Error Message -->
+        <p class="error-message">
+            Oops! The page you're looking for seems to have wandered off.<br>
+            Let's get you back on track.
+        </p>
+        
+        <!-- Search -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search for something...">
+        </div>
+        
+        <!-- Suggestions -->
+        <div class="suggestions">
+            <div class="suggestion-item" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-home"></i>
+                <div>Dashboard</div>
+            </div>
+            <div class="suggestion-item" onclick="window.location.href='chat.html'">
+                <i class="fas fa-comment"></i>
+                <div>AI Chat</div>
+            </div>
+            <div class="suggestion-item" onclick="window.location.href='coder.html'">
+                <i class="fas fa-code"></i>
+                <div>Coder</div>
+            </div>
+            <div class="suggestion-item" onclick="window.location.href='docs.html'">
+                <i class="fas fa-book"></i>
+                <div>Docs</div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="error-actions">
+            <a href="dashboard.html" class="error-btn btn-primary">
+                <i class="fas fa-home"></i> Go to Dashboard
+            </a>
+            <a href="../index.html" class="error-btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Auto redirect after 30 seconds
+        setTimeout(() => {
+            window.location.href = '../index.html';
+        }, 30000);
+        
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.toLowerCase();
+                // In a real app, you'd search through documentation
+                window.location.href = `docs.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+    </script>
+</body>
+</html>

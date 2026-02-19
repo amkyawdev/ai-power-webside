@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>amkyaw.dev - Advanced Code Editor</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/coder.css">
+    
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Glass morphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 80px;
+            transition: margin-left 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            height: 70px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 80px;
+            right: 0;
+            z-index: 40;
+            transition: left 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                left: 0;
+            }
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 10px;
+            margin-left: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Coder Container */
+        .coder-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 20px;
+        }
+
+        .section-tab {
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .section-tab:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .section-tab.active {
+            color: white;
+            border-bottom-color: #667eea;
+        }
+
+        /* Main Coder Area */
+        .main-coder {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* File Explorer */
+        .file-explorer {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        .file-explorer.collapsed {
+            width: 50px;
+        }
+
+        .file-explorer.collapsed .file-header h3,
+        .file-explorer.collapsed .file-tree span {
+            display: none;
+        }
+
+        .file-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-header h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .file-actions i {
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .file-actions i:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .file-item {
+            padding: 8px 12px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-item.active {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .file-item .file-actions {
+            position: absolute;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+
+        /* Editor Area */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a2e;
+            min-width: 0;
+        }
+
+        /* Editor Tabs */
+        .editor-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .editor-tab {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .editor-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .editor-tab.active {
+            background: #1a1a2e;
+            color: white;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .editor-tab .close-tab {
+            font-size: 12px;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+
+        .editor-tab .close-tab:hover {
+            opacity: 1;
+            color: #ef4444;
+        }
+
+        .new-tab-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .new-tab-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        /* CodeMirror */
+        .CodeMirror {
+            height: 100% !important;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            background: #1a1a2e;
+        }
+
+        .CodeMirror-gutters {
+            background: #1a1a2e;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .CodeMirror-linenumber {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            width: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        .preview-panel.collapsed {
+            width: 40px;
+        }
+
+        .preview-panel.collapsed .preview-header h3,
+        .preview-panel.collapsed .preview-content,
+        .preview-panel.collapsed .terminal-content {
+            display: none;
+        }
+
+        .preview-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-header h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .preview-actions i {
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+        }
+
+        .preview-actions i:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            display: none;
+        }
+
+        .preview-content.active {
+            display: block;
+        }
+
+        #previewFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            border-radius: 8px;
+        }
+
+        /* Terminal Content */
+        .terminal-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            display: none;
+            font-family: 'Fira Code', monospace;
+            background: #0a0a1a;
+            flex-direction: column;
+        }
+
+        .terminal-content.active {
+            display: flex;
+        }
+
+        #terminalOutput {
+            flex: 1;
+            color: #00ff00;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-y: auto;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-prompt {
+            color: #00ff00;
+            font-weight: 600;
+        }
+
+        #terminalInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .file-explorer {
+                position: fixed;
+                left: -280px;
+                top: 70px;
+                bottom: 0;
+                z-index: 90;
+            }
+
+            .file-explorer.open {
+                left: 0;
+            }
+
+            .preview-panel {
+                position: fixed;
+                right: -400px;
+                top: 70px;
+                bottom: 0;
+                z-index: 90;
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .preview-panel.open {
+                right: 0;
+            }
+        }
+
+        /* File Icons */
+        .file-icon.html { color: #e34f26; }
+        .file-icon.css { color: #264de4; }
+        .file-icon.js { color: #f7df1e; }
+        .file-icon.py { color: #3776ab; }
+        .file-icon.json { color: #f7df1e; }
+        .file-icon.md { color: #083fa1; }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Components -->
+    <nav-menu></nav-menu>
+    <aside-menu></aside-menu>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <!-- Mobile Menu Toggle (icon for mobile) -->
+                <nav-button type="icon" icon="bars" variant="secondary" size="md" class="menu-toggle hidden" onclick="toggleMobileMenu()"></nav-button>
+                
+                <div class="logo">amkyaw.dev</div>
+                
+                <!-- Web View Navigation (text buttons) -->
+                <div class="header-nav">
+                    <nav-button type="text" label="Dashboard" page="dashboard" variant="secondary" size="md"></nav-button>
+                    <nav-button type="text" label="Chat" page="chat" variant="secondary" size="md"></nav-button>
+                    <nav-button type="text" label="Coder" page="coder" variant="primary" size="md" active></nav-button>
+                    <nav-button type="text" label="Docs" page="docs" variant="secondary" size="md"></nav-button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <!-- Web View Login (text button) -->
+                <nav-button type="text" label="Login" url="../auth/login.html" variant="secondary" size="md" class="hidden md:inline-flex"></nav-button>
+                
+                <!-- User Icon (icon for both views) -->
+                <nav-button type="icon" icon="user" page="settings" variant="secondary" size="md"></nav-button>
+                
+                <!-- Mobile Aside Toggle (icon for mobile) -->
+                <nav-button type="icon" icon="chevron-right" variant="secondary" size="md" class="aside-toggle hidden" onclick="toggleAside()"></nav-button>
+            </div>
+        </div>
+
+        <!-- Coder Container -->
+        <div class="coder-container">
+            <!-- Section Tabs -->
+            <div class="section-tabs">
+                <div class="section-tab active" onclick="switchSection('program')" id="programTab">
+                    <i class="fas fa-code"></i>
+                    <span>program.html</span>
+                </div>
+                <div class="section-tab" onclick="switchSection('terminal')" id="terminalTab">
+                    <i class="fas fa-terminal"></i>
+                    <span>terminal.html</span>
+                </div>
+            </div>
+
+            <!-- Main Coder Area -->
+            <div class="main-coder">
+                <!-- File Explorer -->
+                <div class="file-explorer" id="fileExplorer">
+                    <div class="file-header">
+                        <h3><i class="fas fa-folder-open"></i> EXPLORER</h3>
+                        <div class="file-actions">
+                            <i class="fas fa-folder-plus" onclick="createFolder()" title="New Folder"></i>
+                            <i class="fas fa-file-plus" onclick="createFile()" title="New File"></i>
+                            <i class="fas fa-sync-alt" onclick="refreshFiles()" title="Refresh"></i>
+                            <i class="fas fa-chevron-left" onclick="toggleFileExplorer()" title="Collapse"></i>
+                        </div>
+                    </div>
+                    <div class="file-tree" id="fileTree"></div>
+                </div>
+
+                <!-- Editor Area -->
+                <div class="editor-area">
+                    <div class="editor-tabs" id="editorTabs">
+                        <div class="new-tab-btn" onclick="createFile()">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div id="code-editor"></div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="preview-panel" id="previewPanel">
+                    <div class="preview-header">
+                        <h3><i class="fas fa-eye"></i> PREVIEW</h3>
+                        <div class="preview-actions">
+                            <i class="fas fa-play" onclick="runCode()" title="Run (Ctrl+R)"></i>
+                            <i class="fas fa-external-link-alt" onclick="openProgramViewer()" title="Open in Program Viewer"></i>
+                            <i class="fas fa-times" onclick="togglePreview()" title="Close"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-content active" id="previewContent">
+                        <iframe id="previewFrame" title="Preview"></iframe>
+                    </div>
+                    
+                    <div class="terminal-content" id="terminalContent">
+                        <div id="terminalOutput"></div>
+                        <div class="terminal-input-line">
+                            <span class="terminal-prompt">$</span>
+                            <input type="text" id="terminalInput" placeholder="Enter command...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Components -->
+    <script src="../components/nav-menu.js"></script>
+    <script src="../components/aside.js"></script>
+    <script src="../components/nav-button.js"></script>
+    
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    
+    <!-- Main Coder JS -->
+    <script src="../js/coder.js"></script>
+    
+    <script>
+        // ==================== NAVIGATION ====================
+        function navigate(page) {
+            const pageMap = {
+                'dashboard': 'dashboard.html',
+                'chat': 'chat.html',
+                'coder': 'coder.html',
+                'docs': 'docs.html',
+                'settings': 'setting.html',
+                'about': 'about.html'
+            };
+            if (pageMap[page]) {
+                window.location.href = pageMap[page];
+            }
+        }
+
+        // ==================== COMPONENT CONTROLS ====================
+        function toggleMobileMenu() {
+            document.dispatchEvent(new CustomEvent('openMobileMenu'));
+        }
+
+        function toggleAside() {
+            const aside = document.querySelector('aside-menu');
+            if (aside && aside.toggleAside) {
+                aside.toggleAside();
+            }
+        }
+
+        // ==================== CODER CONTROLS ====================
+        function toggleFileExplorer() {
+            const explorer = document.getElementById('fileExplorer');
+            explorer.classList.toggle('collapsed');
+            if (explorer.classList.contains('collapsed')) {
+                explorer.style.width = '50px';
+            } else {
+                explorer.style.width = '280px';
+            }
+        }
+
+        function togglePreview() {
+            const panel = document.getElementById('previewPanel');
+            panel.classList.toggle('collapsed');
+            if (panel.classList.contains('collapsed')) {
+                panel.style.width = '40px';
+            } else {
+                panel.style.width = '400px';
+            }
+        }
+
+        function switchSection(section) {
+            const programTab = document.getElementById('programTab');
+            const terminalTab = document.getElementById('terminalTab');
+            const previewContent = document.getElementById('previewContent');
+            const terminalContent = document.getElementById('terminalContent');
+
+            if (section === 'program') {
+                programTab.classList.add('active');
+                terminalTab.classList.remove('active');
+                previewContent.classList.add('active');
+                terminalContent.classList.remove('active');
+                previewContent.style.display = 'block';
+                terminalContent.style.display = 'none';
+            } else {
+                terminalTab.classList.add('active');
+                programTab.classList.remove('active');
+                terminalContent.classList.add('active');
+                previewContent.classList.remove('active');
+                previewContent.style.display = 'none';
+                terminalContent.style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('terminalInput').focus();
+                }, 100);
+            }
+        }
+
+        function openProgramViewer() {
+            window.open('coder/program.html', '_blank');
+        }
+
+        // ==================== FILE OPERATIONS ====================
+        function createFile() {
+            if (window.createFile) window.createFile();
+        }
+
+        function createFolder() {
+            if (window.createFolder) window.createFolder();
+        }
+
+        function refreshFiles() {
+            if (window.refreshFiles) window.refreshFiles();
+        }
+
+        function runCode() {
+            if (window.runCode) window.runCode();
+        }
+
+        // ==================== RESPONSIVE HANDLING ====================
+        function handleResize() {
+            const width = window.innerWidth;
+            const headerNav = document.querySelector('.header-nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const asideToggle = document.querySelector('.aside-toggle');
+
+            if (width <= 768) {
+                // Mobile view
+                if (headerNav) headerNav.style.display = 'none';
+                if (menuToggle) menuToggle.style.display = 'inline-flex';
+                if (asideToggle) asideToggle.style.display = 'inline-flex';
+                
+                // Close panels when switching to mobile
+                document.getElementById('fileExplorer').classList.remove('open');
+                document.getElementById('previewPanel').classList.remove('open');
+            } else {
+                // Web view
+                if (headerNav) headerNav.style.display = 'flex';
+                if (menuToggle) menuToggle.style.display = 'none';
+                if (asideToggle) asideToggle.style.display = 'none';
+            }
+        }
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+S - Save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (window.saveCurrentFile) window.saveCurrentFile();
+            }
+            
+            // Ctrl+R - Run
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                runCode();
+            }
+            
+            // Ctrl+B - Toggle File Explorer
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                toggleFileExplorer();
+            }
+            
+            // Ctrl+Shift+P - Toggle Preview
+            if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                e.preventDefault();
+                togglePreview();
+            }
+            
+            // Ctrl+N - New File
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                createFile();
+            }
+            
+            // Esc - Close panels
+            if (e.key === 'Escape') {
+                document.getElementById('fileExplorer')?.classList.remove('open');
+                document.getElementById('previewPanel')?.classList.remove('open');
+            }
+        });
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle responsive
+            handleResize();
+            window.addEventListener('resize', handleResize);
+
+            // Set active page in aside
+            const aside = document.querySelector('aside-menu');
+            if (aside && aside.setActive) {
+                aside.setActive('coder');
+            }
+
+            // Check for pending code from chat
+            const pendingCode = localStorage.getItem('pendingCode');
+            if (pendingCode && window.createFileFromCode) {
+                setTimeout(() => {
+                    window.createFileFromCode(pendingCode);
+                    localStorage.removeItem('pendingCode');
+                }, 500);
+            }
+
+            // Close menus when clicking outside
+            document.addEventListener('click', (e) => {
+                const aside = document.querySelector('aside-menu');
+                if (aside && aside.isOpen && !aside.contains(e.target) && !e.target.closest('.aside-toggle')) {
+                    if (aside.close) aside.close();
+                }
+            });
+        });
+
+        // Export functions
+        window.navigate = navigate;
+        window.toggleMobileMenu = toggleMobileMenu;
+        window.toggleAside = toggleAside;
+        window.toggleFileExplorer = toggleFileExplorer;
+        window.togglePreview = togglePreview;
+        window.switchSection = switchSection;
+        window.openProgramViewer = openProgramViewer;
+        window.createFile = createFile;
+        window.createFolder = createFolder;
+        window.refreshFiles = refreshFiles;
+        window.runCode = runCode;
+    </script>
+</body>
+</html>
