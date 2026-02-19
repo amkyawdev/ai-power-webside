@@ -1,0 +1,127 @@
+/* Coder Page Specific Styles */
+
+/* CodeMirror customizations */
+.CodeMirror {
+    height: 100% !important;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.CodeMirror-gutters {
+    background: #1a1a2e;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.CodeMirror-linenumber {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Terminal styling */
+.terminal-content {
+    background: #0a0a1a;
+}
+
+#terminalOutput div {
+    margin-bottom: 4px;
+}
+
+#terminalOutput pre {
+    margin: 10px 0;
+    background: #000;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+/* Preview iframe */
+#previewFrame {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* File item icons */
+.file-item i.fa-html5 { color: #e34f26; }
+.file-item i.fa-css3-alt { color: #264de4; }
+.file-item i.fa-js { color: #f7df1e; }
+.file-item i.fa-python { color: #3776ab; }
+.file-item i.fa-file-code { color: #9f7aea; }
+.file-item i.fa-markdown { color: #083fa1; }
+
+/* Active file highlight */
+.file-item.active i {
+    color: white !important;
+}
+
+/* Editor tabs scroll */
+.editor-tabs::-webkit-scrollbar {
+    height: 3px;
+}
+
+.editor-tabs::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #667eea, #9f7aea);
+    border-radius: 3px;
+}
+
+/* Mobile menu buttons */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    z-index: 95;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+}
+
+/* Loading states */
+.coder-loading {
+    position: relative;
+}
+
+.coder-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 10;
+}
+
+/* Print styles */
+@media print {
+    .file-explorer,
+    .preview-panel,
+    .section-tabs,
+    .editor-tabs {
+        display: none;
+    }
+    
+    .editor-area {
+        width: 100%;
+    }
+    
+    #code-editor {
+        height: auto;
+        overflow: visible;
+    }
+}
