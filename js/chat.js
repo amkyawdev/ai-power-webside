@@ -1,5 +1,5 @@
 // Gemini AI Integration
-const WORKER_URL = 'https://amkyawdev.mysvm.workers.dev';
+const WORKER_URL = "https://ai.amkyaw.workers.dev/";
 
 // Chat state
 let messages = [];
